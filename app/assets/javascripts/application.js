@@ -1,9 +1,17 @@
+// This is a manifest file that'll be compiled into including all the files listed below.
+// Add new JavaScript/Coffee code in separate files in this directory and they'll automatically
+// be included in the compiled file accessible from http://example.com/assets/application.js
+// It's not advisable to add code directly here, but if you do, it'll appear at the bottom of the
+// the compiled file.
+
+//= require vendor/underscore-min
 //= require vendor/jquery.min
 //= require vendor/jquery-ui.min
 //= require vendor/jquery_ujs
 //= require noconflict
 //= require vendor/prototype
 //= require vendor/scriptaculous
+//= require utils
 //= require vendor/effects
 //= require vendor/dragdrop
 //= require vendor/controls
@@ -13,17 +21,6 @@
 //= require info_statuses
 //= require alignment
 //= require dependency_alignment
-//= require underscore
-//= require vue
-//= require vue-resource
-//= require vue-router
-//= require app/store
-//= require app/typeahead
-//= require app/morphology_editor
-//= require app/tree
-//= require app/syntax_editor
-//= require app/editable
-//= require app/app
 
 var authenticity_param;
 var authenticity_token;
@@ -73,37 +70,6 @@ function setup() {
 
   if (document.querySelector('#dependency-alignment-editor'))
     dependencyAlignmentSetup();
-
-  // Hook up progressive enhancment Vue apps
-  if (document.querySelector('#app-graph')) {
-    new Vue({
-      el: '#app-graph',
-      data: {
-        current: null,
-        modes: ["unsorted", "linearized", "packed", "full"],
-        graph: ''
-      },
-      ready: function() {
-        this.current = this.$el.dataset.method
-      },
-      watch: {
-        current: function(n) {
-          var self = this;
-          var xhr = new XMLHttpRequest();
-          var url = this.$el.dataset.graphUrl;
-          xhr.open('GET', url + '?method=' + this.current);
-          xhr.onload = function () {
-            if (xhr.status === 200) {
-              self.graph = xhr.responseText;
-            } else {
-              alert("Sorry, something went wrong! We've logged the error and will look into it.");
-            }
-          }
-          xhr.send();
-        }
-      }
-    })
-  }
 }
 
 if (document.readyState != 'loading') {
