@@ -6,6 +6,7 @@ It contains new features for working specifically with Greek texts, including:
 
   - Parallel display of text in Greek and Roman alphabets using automatic transliteration
   - BetaCode search functionality for Greek texts
+  - New command `proiel:text:clear` to clear all text data without resetting other data such as user profiles
   - Ability to use a single, combined lexicon and lemma list for Ancient and Modern Greek
   - Export of multiple texts to a single file
   - Semantic tagging using the DiGreC semantic tagging schema (view, edit, search, round-trip export and import)
