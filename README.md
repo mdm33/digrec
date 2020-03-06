@@ -95,8 +95,6 @@ Set up database entries for DiGreC-style semantic tagging:
 bundle exec rake proiel:semantic_tags:setup
 ```
 
-If you run the application behind nginx or another webserver, you should ensure that the webserver serves the `public` directory. Otherwise, make sure that `RAILS_SERVE_STATIC_ASSETS` in `.env` is set to `true` so that Rails will serve this directory.
-
 ### Step 7: Start the server and worker
 
 For development, run the server using
