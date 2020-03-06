@@ -1,4 +1,6 @@
 Proiel::Application.routes.draw do
+  get "help/index"
+
   devise_for :users
   resources :users, :only => [:index, :show]
 
