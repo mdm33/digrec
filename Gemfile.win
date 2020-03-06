@@ -1,4 +1,4 @@
-source 'https://rubygems.org'
+source 'http://rubygems.org'
 
 gem 'rails', '3.2.22'
 gem 'json'
@@ -8,7 +8,7 @@ gem 'proiel', '1.1.1'
 
 gem 'formtastic'
 gem 'kaminari'
-gem 'haml'
+gem 'haml', '~> 4.0.4'
 gem 'devise', '~> 2.2.4'
 gem 'devise-encryptable'
 gem 'exception_notification', '~> 3.0.1'
@@ -36,7 +36,7 @@ end
 
 gem 'foreman'
 gem 'dotenv'
-gem 'unicorn'
+#gem 'unicorn'
 
 group :development, :test do
   gem 'rspec-rails'
