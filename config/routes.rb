@@ -1,6 +1,8 @@
-Rails.application.routes.draw do
+Proiel::Application.routes.draw do
   devise_for :users
   resources :users, :only => [:index, :show]
+
+  resource :profile, :only => [:edit, :update]
 
   resources :audits, :only => [:index, :destroy]
 
@@ -20,16 +22,12 @@ Rails.application.routes.draw do
   end
 
   resources :lemmata, :only => [:index, :show, :edit, :update] do
-    collection do
-      get :autocomplete
-    end
-
     member do
       post :merge
     end
   end
 
-  resources :tokens, :only => [:index, :edit, :update] do
+  resources :tokens, :only => [:index, :show, :edit, :update] do
     member do
       get :dependency_alignment_group
     end
@@ -45,10 +43,17 @@ Rails.application.routes.draw do
       get :flag_as_not_reviewed # FIXME: should be post
       get :flag_as_reviewed     # FIXME: should be post
       get :export
-      get :annotation
     end
 
     resource :dependency_alignments, :only => [:show, :edit, :update]
+
+    resource :morphtags, :only => [:edit, :update] do
+      member do
+        post :auto_complete_for_morphtags_lemma
+      end
+    end
+
+    resource :dependencies, :only => [:show, :edit, :update]
 
     resource :info_status, :only => [:edit, :update] do
       collection do
@@ -60,20 +65,18 @@ Rails.application.routes.draw do
     resource :tokenizations, :only => [:edit, :update]
   end
 
-  resources :notes, :only => [:edit, :update, :destroy]
+  resources :notes, :only => [:show, :edit, :update, :destroy]
 
   resources :semantic_tags, :only => [:index, :show]
 
-  resources :schemas, only: [:show]
-
   # Wizard
-  get '/wizard/:action', to: 'wizard#:action'
-  get '/wizard', to: 'wizard#index'
+  match '/wizard/:action', :to => 'wizard#:action'
+  match '/wizard',         :to => 'wizard#index'
 
   # Quick search and search suggestions
-  get '/quick_search', to: 'tokens#quick_search'
-  get '/quick_search.:format', to: 'tokens#quick_search'
-  get '/opensearch.:format', to: 'tokens#opensearch'
+  match '/quick_search', :to => 'tokens#quick_search'
+  match '/quick_search.:format', :to => 'tokens#quick_search'
+  match '/opensearch.:format', :to => 'tokens#opensearch'
 
   # Default page
   root :to => 'sources#index'

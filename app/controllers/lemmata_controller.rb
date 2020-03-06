@@ -1,7 +1,8 @@
 #--
 #
-# Copyright 2009-2016 University of Oslo
-# Copyright 2009-2016 Marius L. Jøhndal
+# Copyright 2009, 2010, 2011, 2012, 2013 University of Oslo
+# Copyright 2009, 2010, 2011, 2012, 2013 Marius L. Jøhndal
+# New material copyright 2020 by Morgan Macleod
 #
 # This file is part of the PROIEL web application.
 #
@@ -50,7 +51,7 @@ class LemmataController < ApplicationController
     normalize_unicode_params! params[:lemma], :lemma
 
     @lemma = Lemma.find(params[:id])
-    @lemma.update(lemma_params)
+    @lemma.update_attributes(params[:lemma])
 
     respond_with @lemma
   rescue ActiveRecord::RecordInvalid => invalid
@@ -75,36 +76,14 @@ class LemmataController < ApplicationController
   end
 
   def index
+    if params[:q]
+      if params[:q][:lemma_wildcard_matches]
+        params[:q][:lemma_wildcard_matches] = TokensController.beta_decode(params[:q][:lemma_wildcard_matches])
+      end
+    end
     @search = Lemma.order(:lemma).search(params[:q])
     @lemmata = @search.result.page(current_page)
 
     respond_with @dictionary
-  end
-
-  # Returns potential renderings of transliterated lemmata.
-  def autocomplete
-    form, language = params[:form] || '', params[:language]
-
-    if form.empty?
-      # Prevent look-up of all possible completions
-      @transliterations = []
-      @completions = []
-    else
-      @transliterations, @completions = LanguageTag.find_lemma_completions(language, form)
-    end
-
-    a = []
-    @transliterations.each { |t| a << { form: t, gloss: nil, exists: false } }
-    @completions.sort_by { |l| l.form }.uniq.each { |t| a << { form: t.form, gloss: t.gloss, exists: true } }
-
-    respond_to do |format|
-      format.json { render json: a }
-    end
-  end
-
-  private
-
-  def lemma_params
-    params.require(:lemma).permit(:lemma, :variant, :gloss, :foreign_ids, :language_tag, :part_of_speech_tag)
   end
 end

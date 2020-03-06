@@ -1,7 +1,8 @@
+# encoding: UTF-8
 #--
 #
-# Copyright 2007-2016 University of Oslo
-# Copyright 2007-2017 Marius L. Jøhndal
+# Copyright 2007, 2008, 2009, 2010, 2011, 2012, 2013, 2014 University of Oslo
+# Copyright 2007, 2008, 2009, 2010, 2011, 2012, 2013, 2014 Marius L. Jøhndal
 #
 # This file is part of the PROIEL web application.
 #
@@ -21,6 +22,12 @@
 #++
 
 class Source < ActiveRecord::Base
+  attr_accessible :source_id, :code, :position, :title,
+    :aligned_source_division_id, :presentation_before, :presentation_after,
+    :language_tag, :citation_part, :created_at, :updated_at,
+    :author
+  attr_accessible(*Proiel::Metadata.fields)
+
   change_logging
 
   blankable_attributes :author
@@ -127,19 +134,6 @@ class Source < ActiveRecord::Base
 
     other_source.reload
     self.reload
-  end
-
-  # Returns the alignment source if any descendant object is aligned to an object in another source.
-  #
-  # This does not verify that all descendants with alignments actually refer to the
-  # same source.
-  def inferred_aligned_source
-    source_divisions.each do |sd|
-      i = sd.inferred_aligned_source
-      return i unless i.nil?
-    end
-
-    nil
   end
 
   private

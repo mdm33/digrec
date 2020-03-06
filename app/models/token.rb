@@ -1,7 +1,8 @@
+# encoding: UTF-8
 #--
 #
-# Copyright 2007-2016 University of Oslo
-# Copyright 2007-2017 Marius L. Jøhndal
+# Copyright 2007, 2008, 2009, 2010, 2011, 2012, 2013, 2014 University of Oslo
+# Copyright 2007, 2008, 2009, 2010, 2011, 2012, 2013, 2014 Marius L. Jøhndal
 #
 # This file is part of the PROIEL web application.
 #
@@ -21,6 +22,13 @@
 #++
 
 class Token < ActiveRecord::Base
+  attr_accessible :sentence_id, :token_number, :form, :lemma_id, :head_id,
+    :source_morphology_tag, :source_lemma, :foreign_ids, :information_status_tag,
+    :empty_token_sort, :contrast_group, :token_alignment_id,
+    :automatic_token_alignment, :dependency_alignment_id, :antecedent_id,
+    :morphology_tag, :citation_part, :presentation_before, :presentation_after,
+    :relation_tag, :created_at, :updated_at
+
   change_logging
 
   blankable_attributes :antecedent_id, :automatic_token_alignment,
@@ -47,7 +55,7 @@ class Token < ActiveRecord::Base
 
   belongs_to :token_alignment, :class_name => 'Token', :foreign_key => 'token_alignment_id'
   belongs_to :dependency_alignment, :class_name => 'Token', :foreign_key => 'dependency_alignment_id'
-  has_many :dependency_alignment_terminations, class_name: 'DependencyAlignmentTerm'
+  has_many :dependency_alignment_terminations
 
   has_many :anaphors, :class_name => 'Token', :foreign_key => 'antecedent_id', :dependent => :nullify
   belongs_to :antecedent, :class_name => 'Token', :foreign_key => 'antecedent_id'
@@ -520,7 +528,7 @@ class Token < ActiveRecord::Base
   # a list of alternative suggestions in order of decreasing probability.
   # To check if the guesser altered the features of the token, check the
   # value of +changed?+.
-  def guesses
+  def guess_morphology!(overlaid_features = nil)
     # Guess morphology using both +morph_features+ and
     # +source_morph_features+. The only way of making use of
     # +source_morph_features+ is to include them here as there is no
@@ -536,7 +544,17 @@ class Token < ActiveRecord::Base
     # priority: 1) Any value set by the caller, 2) any value already set on
     # the token. +source_morphology_tag+ only has an effect on the guessing of
     # morphology.
-    new_morph_features = morph_features || pick || nil
+    new_morph_features = if overlaid_features
+                           # FIXME
+                           x, y, z, w = overlaid_features.split(',')
+                           MorphFeatures.new([x, y, z].join(','), w)
+                         elsif morph_features
+                           morph_features
+                         elsif pick
+                           pick
+                         else
+                           nil
+                         end
 
     # FIXME: find a way of unifying this with morph_features=() ideally by
     # avoiding the implicit saving of objects.
@@ -548,19 +566,8 @@ class Token < ActiveRecord::Base
       self.lemma = nil
     end
 
-    suggestions.map do |guess, probability|
-      {
-        probability: probability,
-        lemma: {
-          id: guess.lemma.id,
-          gloss: guess.lemma.gloss,
-          language_tag: guess.lemma.language_tag,
-          part_of_speech_tag: guess.lemma.part_of_speech_tag,
-          form: guess.lemma.form
-        },
-        msd: guess.morphology_to_hash
-      }
-    end
+    # Return all suggestions but strip off the probabilities.
+    suggestions.map(&:first)
   end
 
   def sem_tags_to_hash
@@ -674,25 +681,5 @@ class Token < ActiveRecord::Base
   # "PRO-RELATION" if the token is a PRO token.
   def form_or_pro
     empty_token_sort == 'P' ? "PRO-#{relation.tag.upcase}" : form
-  end
-
-  # Returns the alignment source if any descendant object is aligned to an object in another source.
-  #
-  # This does not verify that all descendants with alignments actually refer to the
-  # same source.
-  def inferred_aligned_source
-    if token_alignment_id.nil?
-      nil
-    else
-      token_alignment.sentence.source_division.source
-    end
-  end
-
-  def msd
-    morph_features ? morph_features.morphology_to_hash : {}
-  end
-
-  def slashes
-    slash_out_edges.map { |s| { relation_tag: s.relation_tag, target_id: s.slashee_id } }
   end
 end

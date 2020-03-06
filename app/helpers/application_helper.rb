@@ -42,6 +42,36 @@ module ApplicationHelper
     current_user.try(:has_role?, :reader)
   end
 
+  def message(level, header, body = '')
+    content_tag(:div, content_tag(:b, header) + body, :id => level)
+  end
+
+  def _select_tag(name, value, option_tags, options = {}) #:nodoc:
+    if options[:include_blank]
+      options.delete(:include_blank)
+      if value.nil? or value == ''
+        select_tag name, "<option value='' selected='selected'></options>".html_safe + option_tags, options
+      else
+        select_tag name, "<option value=''></options>".html_safe + option_tags, options
+      end
+    else
+      select_tag name, option_tags, options
+    end
+  end
+
+  def _select_tag_db(name, model, value_field, value, options) #:nodoc:
+    option_tags = options_from_collection_for_select(model.find(:all), :id, value_field, value.to_i)
+    _select_tag name, value, option_tags, options
+  end
+
+  # Returns a select tag for sources.
+  #
+  # ==== Options
+  # +:include_blank+:: If +true+, includes an empty value first.
+  def source_select_tag(name, value, options = {})
+    _select_tag_db(name, Source, :citation, value, options)
+  end
+
   # Returns a radio button with a function as onclick handler.
   def radio_button_to_function(name, value, checked, *args, &block)
     html_options = args.extract_options!
@@ -66,12 +96,17 @@ module ApplicationHelper
     "<span class='relation'><abbr title='#{relation.summary.capitalize}'>#{relation.tag}</abbr></span>"
   end
 
+  # Generates a human readable representation of a dependency.
+  def readable_dependency(relation, head)
+    '(' + readable_relation(relation) + (head ? ", #{head}" : '') + ')'
+  end
+
   # Returns links to external sites for a sentence.
   def external_text_links(sentence)
     [BiblosExternalLinkMapper].map do |l|
       url = l.instance.to_url(sentence.citation)
       if url
-        link_to(l.instance.site_name, url)
+        link_to(l.instance.site_name, url, class: :external)
       else
         nil
       end
@@ -95,6 +130,43 @@ module ApplicationHelper
     concat("<div class='roundedbox'><dl style='float: left; width: 90%'>".html_safe)
     concat(content)
     concat("</dl><br style='clear: both' /></div>".html_safe)
+  end
+
+  # Generates a title header and a set of associated links directly
+  # next to the header.
+  def layer(id, options = {}, &block)
+    title = options[:title]
+    title ||= id.to_s.humanize
+    actions = options[:actions]
+    actions = "(#{actions.join(' | ')})" if actions
+
+    content = capture(&block)
+    concat("<div id='#{id}' class='layer'><h1 class='layer-title'>#{title}</h1> <span class='layer-actions'>#{actions}</span><div class='layer-content'>".html_safe)
+    concat(content)
+    concat("</div></div>".html_safe)
+  end
+
+  # Generates a title header and a set of associated links directly
+  # next to the header if the condition +condition+ is +true+. Otherwise
+  # takes no action. The remainin arguments are the same as for
+  # +layer+.
+  def layer_if(condition, *args, &block)
+    condition ? layer(*args, &block) : ''
+  end
+
+  # Generates a title header and a set of associated links directly
+  # next to the header unless the condition +condition+ is +true+. Otherwise
+  # takes no action. The remainin arguments are the same as for
+  # +layer+.
+  def layer_unless(condition, *args, &block)
+    layer_if(!condition, *args, &block)
+  end
+
+  # Generates a link if the condition +condition+ is +true+, otherwise
+  # takes no action. The remaining arguments are the same as those
+  # for +link_to+.
+  def show_link_to_if(condition, *args)
+    condition ? link_to(*args) : ''
   end
 
   # Formats a token form with HTML language attributes.
@@ -130,23 +202,23 @@ module ApplicationHelper
 
   # Creates a resource index link for an object.
   def link_to_index(object)
-    link_to('Index', send("#{object.class.to_s.underscore.pluralize}_url"))
+    link_to('Index', send("#{object.class.to_s.underscore.pluralize}_url"), :class => :index)
   end
 
   # Creates a resource index link for an object or a model.
   def link_to_new(object_or_model)
     klass = object_or_model.is_a?(Class) ? object_or_model : object_or_model.class
-    link_to('New', send("new_#{klass.to_s.underscore}_url"))
+    link_to('New', send("new_#{klass.to_s.underscore}_url"), :class => :new)
   end
 
   # Creates a resource edit link for an object.
   def link_to_edit(object)
-    link_to('Edit', send("edit_#{object.class.to_s.underscore}_url"))
+    link_to '', send("edit_#{object.class.to_s.underscore}_url"), :class => :edit
   end
 
   # Creates a resource delete link for an object.
   def link_to_delete(object)
-    link_to('Delete', object, method: :delete, confirm: 'Are you sure?')
+    link_to('Delete', object, :method => :delete, :confirm => 'Are you sure?', :class => :delete)
   end
 
   # Creates a resource previous link for an object. This is only
@@ -155,7 +227,7 @@ module ApplicationHelper
   # to an access key.
   def link_to_previous(object)
     if object.has_previous?
-      link_to('Previous', object.previous_object, accesskey: 'p')
+      link_to '', object.previous_object, :class => :previous, :accesskey => 'p'
     end
   end
 
@@ -164,7 +236,7 @@ module ApplicationHelper
   # +has_next?+ and +next+. The link will be tied to an access key.
   def link_to_next(object)
     if object.has_next?
-      link_to('Next', object.next_object, accesskey: 'n')
+      link_to '', object.next_object, :class => :next, :accesskey => 'n'
     end
   end
 
@@ -172,7 +244,7 @@ module ApplicationHelper
   # model to respond to +parent+. The link will be tied to an access
   # key.
   def link_to_parent(object)
-    link_to('Parent', object.parent, accesskey: 'u')
+    link_to('Parent', object.parent, :class => :parent, :accesskey => 'u')
   end
 
   def breadcrumb_title_for(object)
@@ -182,15 +254,13 @@ module ApplicationHelper
     when SourceDivision
       object.title
     when Sentence
-      "Sentence #{object.id}"
+      "Sentence #{object.sentence_number}"
     when Token
-      "Token #{object.id}"
+      "Token #{object.token_number}"
     when Lemma
-      content_tag(:em, object.export_form, lang: object.language_tag) +
+      content_tag(:em, object.export_form, :lang => object.language_tag) +
         " (#{object.pos_summary})" +
         (@lemma.gloss ? " '#{@lemma.gloss}'" : "")
-    when Note
-      "Note #{object.id}"
     when String
       object
     else
@@ -212,37 +282,6 @@ module ApplicationHelper
     *parents, current = objects
     crumbs = parents.map { |o| breadcrumb_link_to(o) }
     crumbs << breadcrumb_title_for(current)
-    b = crumbs.map { |c| "<li>#{c}</li>" }.join(' » ')
-    content_for(:breadcrumbs) do
-      "<ol class=\"breadcrumbs\">#{b}</ol>".html_safe
-    end
-  end
-
-  def search_language_tags
-    Source.represented_languages
-  end
-
-  def search_sources
-    Source.all.sort_by(&:to_label)
-  end
-
-  def search_status_tags
-    StatusTag.all.map { |t| [t.to_label, t.tag] }
-  end
-
-  def search_part_of_speech_tags
-    Lemma.represented_parts_of_speech
-  end
-
-  def search_relation_tags
-    RelationTag.all.map { |t| [t.to_label, t.tag] }
-  end
-
-  def search_information_status_tags
-    InformationStatusTag.all.map { |t| [t.to_label, t.tag] }
-  end
-
-  def search_morphology_field_tags(field)
-    MorphFeatures::MORPHOLOGY_SUMMARIES[field].map { |x, y| [y, x] }
+    crumbs.join(' » ')
   end
 end

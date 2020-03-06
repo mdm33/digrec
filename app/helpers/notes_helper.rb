@@ -1,12 +1,18 @@
 module NotesHelper
-  def format_note_originator(originator)
+  # Creates a summary view of a collection of notes.
+  def notes_summary(notes)
+    content_tag(:ul, render(:partial => 'notes/summary', :collection => notes))
+  end
+
+  # Creates a link to a note originator.
+  def link_to_originator(originator)
     case originator
     when User
-      originator.full_name
+      link_to_user(originator)
     when ImportSource
       originator.summary
     else
-      'System'
+      raise ArgumentError, "Invalid originator"
     end
   end
 
@@ -14,9 +20,13 @@ module NotesHelper
   def link_to_notable(notable)
     case notable
     when Token
-      link_to "Token #{notable.id}", notable.sentence
+      link_to_token(notable)
+    when Sentence
+      link_to_sentence(notable)
+    when Lemma
+      link_to_lemma(notable)
     else
-      link_to "#{notable.class} #{notable.id}", notable
+      raise ArgumentError, "Invalid originator"
     end
   end
 end

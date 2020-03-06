@@ -1,5 +1,6 @@
-- title "User #{@user.login}"
-- breadcrumbs ['Home', root_path], ['Users', users_path], "User #{@user.login}"
+- context_bar do
+  .breadcrumbs
+    != breadcrumbs 'Users'
 
 - roundedbox do
   %dt User name:

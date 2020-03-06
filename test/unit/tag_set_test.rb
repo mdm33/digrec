@@ -1,4 +1,4 @@
-require 'test_helper'
+require File.dirname(__FILE__) + '/../test_helper'
 
 class TagSetTestCase < ActiveSupport::TestCase
   def test_information_structure_tag_set_accessor

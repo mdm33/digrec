@@ -1,6 +1,3 @@
-!= title 'History'
-!= breadcrumbs ['Home', root_path], 'History'
-
 - if params[:sentence_id]
   Showing changes relating to sentence
   != params[:sentence_id]
@@ -8,6 +5,15 @@
   Showing changes by user
   != @user.login
 
-!= paginate @audits
+.tabular
+  != paginate @audits
 
-!= render partial: 'audits/summary', collection: @audits
+  %table.ui.table.segment
+    %thead
+      %tr
+        %th Created by
+        %th Created at
+        %th Changed object
+
+    %tbody
+      != render @audits

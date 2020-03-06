@@ -4,6 +4,7 @@
 # Copyright 2007, 2008, 2009, 2010, 2011, 2012, 2013, 2014, 2015 University of Oslo
 # Copyright 2007, 2008, 2009, 2010, 2011, 2012, 2013, 2014, 2015 Marius L. Jøhndal
 # Copyright 2007, 2008, 2009, 2010, 2011, 2012 Dag Haug
+# New material copyright 2019 Morgan Macleod
 #
 # This file is part of the PROIEL web application.
 #
@@ -162,6 +163,10 @@ class PROIELXMLImporter
 
               if token['@lemma'] or token['part_of_speech'] or token['@morphology']
                 t.morph_features = MorphFeatures.new("#{token['@lemma']},#{token['@part_of_speech']},#{sr.language_tag}", token['@morphology'])
+              end
+
+              if token['@animacy']
+                t.semantic_tags.create(:semantic_attribute_value => value = SemanticAttribute.find_by_tag('animacy').semantic_attribute_values.find_by_tag(token['@animacy']))
               end
 
               token_id_map[token['@id'].to_i] = t.id

@@ -26,28 +26,35 @@ module SentenceFormattingHelper
   # <tt>:highlight</tt> -- A token or sentence object or an array of such
   # objects to highlight.
   #
-  # <tt>:link_to</tt> -- If true, will link to sentences.
+  # <tt>:link_to</tt> -- If <tt>:tokens</tt>, will link to tokens. If
+  # <tt>:sentences</tt>, will link to sentences.
   #
   # <tt>:single_line</tt> -- Ignore characters that indicate linefeeds and
   # paragraph breaks.
   #
   def format_sentence(value, options = {}, &block)
-    options.reverse_merge! highlight: []
-    options[:highlight] = [*options[:highlight]]
+    options.reverse_merge! :highlight => []
+    options[:highlight] = [options[:highlight]] if options[:highlight].is_a?(Token) or options[:highlight].is_a?(Sentence)
 
-    x = [*value].map do |obj|
-          case obj
-          when Sentence
-            obj.tokens_with_deps_and_is
-          when Token
-            obj
-          else
-            raise ArgumentError, 'expected Sentence or Token'
-          end
-        end.flatten
+    x = nil
 
-    if x.length > 0
-      format_tokens(x, options, &block)
+    value = value.all if value.is_a?(ActiveRecord::Relation)
+
+    if value.is_a?(Sentence)
+      x = value.tokens_with_deps_and_is
+    elsif value.is_a?(Array)
+      if value.empty?
+        return ''
+      elsif value.first.is_a?(Sentence)
+        x = value.map { |sentence| sentence.tokens_with_deps_and_is }.flatten
+      elsif value.first.is_a?(Token)
+        x = value
+      end
+    end
+
+    if x and x.length > 0
+      markup = format_tokens(x, options, &block)
+      "<div class='formatted-text' lang='#{x.first.language}'>#{markup}</div>".html_safe
     else
       ''
     end
@@ -128,8 +135,8 @@ module SentenceFormattingHelper
       form_attributes[:class] += ' token'
 
       if options[:highlight].include?(token) or options[:highlight].include?(token.sentence)
-        presentation_attributes[:class] = 'highlighted'
-        form_attributes[:class] += ' highlighted'
+        presentation_attributes[:class] = 'highlight'
+        form_attributes[:class] += ' highlight'
       end
 
       form_attributes[:class].strip!
@@ -142,7 +149,8 @@ module SentenceFormattingHelper
 
       form = TokenText.token_form_as_html(token.form_or_pro, single_line: options[:single_line]).html_safe
 
-      if options[:link_to]
+      case options[:link_to]
+      when :tokens, :sentences
         s += link_to form, object_url, form_attributes
       else
         s += content_tag :span, form, form_attributes
@@ -209,12 +217,15 @@ module SentenceFormattingHelper
 
       extra_attributes = block ? block.call(token) : nil
 
-      if options[:link_to]
+      case options[:link_to]
+      when :tokens
+        t << FormattedToken.new(token, extra_attributes, url_for(token))
+      when :sentences
         t << FormattedToken.new(token, extra_attributes, url_for(token.sentence))
       else
         t << FormattedToken.new(token, extra_attributes)
       end
-      t << FormattedReference.new(:token_number, token.token_number)
+      t << FormattedReference.new(:token_number, token.token_number, url_for(token))
     end
 
     t.compact

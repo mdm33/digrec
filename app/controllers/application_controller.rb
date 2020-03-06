@@ -1,5 +1,5 @@
 class ApplicationController < ActionController::Base
-  protect_from_forgery with: :exception
+  protect_from_forgery
   before_filter :authenticate_user!
 
   helper :all
@@ -14,7 +14,7 @@ class ApplicationController < ActionController::Base
 
   # Returns the user's preference settings.
   def user_preferences
-    current_user.try(:preferences) || { graph_method: 'unsorted' }
+    current_user.try(:preferences) || { :graph_format => "png", :graph_method => "unsorted" }
   end
 
   helper_method :current_page

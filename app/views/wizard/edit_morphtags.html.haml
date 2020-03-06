@@ -1,10 +1,13 @@
-!= breadcrumbs ['Annotation', wizard_path], @source, @source_division, @sentence, 'Edit morphology'
-!= completion_rate @sentence.status
-!= " (#{remaining_assigned_sentences} remaining)"
-!= external_text_links @sentence
+- context_bar do
+  .breadcrumbs
+    != breadcrumbs ['Annotation', wizard_path], @source, @source_division, @sentence, 'Edit morphology'
+    != completion_rate @sentence.status
+    != " (#{remaining_assigned_sentences} remaining)"
+  %p
+    != external_text_links @sentence
 
-#morphology-view.interlinear{"data-sentence-id": @sentence.id}
-  != render 'morphtags/component'
+!= form_tag({ :controller => 'morphtags', :action => 'update', :sentence_id => @sentence, :wizard => true}, :id => "morphtag-form", :method => :put) do
+  != render 'morphtags/form'
+  != submit_tag 'Save'
 
-!= button_to 'Continue to syntax', action: 'edit_dependencies'
-!= button_to 'Skip this sentence', action: 'next_sentence'
+!= button_to 'Skip', :action => 'next_sentence'

@@ -1,4 +1,4 @@
-require 'test_helper'
+require File.dirname(__FILE__) + '/../test_helper'
 
 class MorphFeaturesTestCase < ActiveSupport::TestCase
   def setup
@@ -26,7 +26,7 @@ class MorphFeaturesTestCase < ActiveSupport::TestCase
 
     assert_equal 'cur', m.lemma.lemma
     assert_equal 'Dq', m.lemma.part_of_speech.tag
-    assert_nil m.lemma.variant
+    assert_equal nil, m.lemma.variant
 
     assert_equal "cur,Dq,lat,---------n", m.to_s
   end
@@ -54,7 +54,7 @@ class MorphFeaturesTestCase < ActiveSupport::TestCase
 
     assert_equal 'cur', m.lemma.lemma
     assert_equal 'Dq', m.lemma.part_of_speech.tag
-    assert_nil m.lemma.variant
+    assert_equal nil, m.lemma.variant
 
     assert_equal "cur,Dq,lat,h---------", m.to_s
   end
@@ -68,7 +68,7 @@ class MorphFeaturesTestCase < ActiveSupport::TestCase
 
     assert_equal 'cur', m.lemma.lemma
     assert_equal 'Dq', m.lemma.part_of_speech.tag
-    assert_nil m.lemma.variant
+    assert_equal nil, m.lemma.variant
 
     assert_equal "cur,Dq,lat,----------", m.to_s
   end
@@ -80,9 +80,9 @@ class MorphFeaturesTestCase < ActiveSupport::TestCase
     assert_equal 'lat', m.language_s
     assert_equal '---------n', m.morphology_s
 
-    assert_nil m.lemma.lemma
+    assert_equal nil, m.lemma.lemma
     assert_equal 'Dq', m.lemma.part_of_speech.tag
-    assert_nil m.lemma.variant
+    assert_equal nil, m.lemma.variant
 
     assert_equal ",Dq,lat,---------n", m.to_s
   end
@@ -168,6 +168,10 @@ class MorphFeaturesTestCase < ActiveSupport::TestCase
     assert_equal '-------p', MorphFeatures.new(',Df,lat','-------p').morphology_abbrev_s
     assert_equal '-------p', MorphFeatures.new(',Df,lat','-------p-').morphology_abbrev_s
     assert_equal '-------p', MorphFeatures.new(',Df,lat','-------p--').morphology_abbrev_s
+  end
+
+  def test_morphology_as_sql_pattern
+    assert_equal '_______p%', MorphFeatures.new(',Df,lat','-------p').morphology_as_sql_pattern
   end
 
   def test_subtag

@@ -4,7 +4,7 @@
 module ActionView
   class LogSubscriber < ActiveSupport::LogSubscriber
     def logger
-      @memoized_logger ||= Logger.new('/dev/null')
+      @memoized_logger ||= Logger.new(nil)
     end
   end
 end

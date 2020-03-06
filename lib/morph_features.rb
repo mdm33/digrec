@@ -92,7 +92,7 @@ class MorphFeatures
       base_and_variant, pos, language = lemma.split(',')
       raise ArgumentError, "missing language" if language.blank?
 
-      language = LanguageTag.find(language)
+      language = LanguageTag.find("ell" == language ? "grc" : language)
       raise ArgumentError, "invalid language" unless language
 
       base, variant = base_and_variant.split('#')
@@ -102,7 +102,12 @@ class MorphFeatures
         pos = pos + '-' if pos.length == 1
         part_of_speech = PartOfSpeech.new(pos)
 
-        @lemma = Lemma.find_by_part_of_speech_tag_and_lemma_and_variant_and_language(part_of_speech.tag, base, variant, language) if part_of_speech
+        #@lemma = Lemma.find_by_part_of_speech_tag_and_lemma_and_variant_and_language(part_of_speech.tag, base, variant, language) if part_of_speech
+        if part_of_speech
+          Lemma.where(part_of_speech_tag: part_of_speech.tag, lemma: base, variant: variant, language: language).find_each do |q|
+            @lemma = q if q.lemma == base
+          end
+        end
       else
         part_of_speech = nil
       end
@@ -151,9 +156,10 @@ class MorphFeatures
     morphology_s.sub(/-+$/, '')
   end
 
-  MORPHOLOGY_ALL_SUMMARIES = YAML.load_file(Rails.root.join(Proiel::Application.config.tagset_file_path, 'morphology.yml')).inject({}) do |m, v|
-    m[v[0]] = v[1].inject({}) { |m2, v2| m2[v2[0]] = v2[1]; m2 }
-    m
+  # Returns the morphology as a pattern suitable for matching using
+  # SQL's LIKE operator.
+  def morphology_as_sql_pattern
+    morphology_abbrev_s.gsub('-', '_') + '%'
   end
 
   MORPHOLOGY_SUMMARIES = YAML.load_file(Rails.root.join(Proiel::Application.config.tagset_file_path, 'morphology.yml')).inject({}) do |m, v|

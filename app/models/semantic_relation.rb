@@ -1,8 +1,7 @@
 #--
 #
-# Copyright 2010-2012 University of Oslo
-# Copyright 2010-2012 Dag Haug
-# Copyright 2010-2017 Marius L. Jøhndal
+# Copyright 2010, 2011, 2012 University of Oslo
+# Copyright 2010, 2011, 2012 Dag Haug
 #
 # This file is part of the PROIEL web application.
 #
@@ -22,16 +21,16 @@
 #++
 
 class SemanticRelation < ActiveRecord::Base
-  #attr_accessible :target_id, :controller_id, :sematic_relation_tag_id
+  attr_accessible :target_id, :controller_id, :sematic_relation_tag_id
   change_logging
 
   belongs_to :controller, :class_name => 'Token', :foreign_key => 'controller_id'
   belongs_to :target, :class_name => 'Token', :foreign_key => 'target_id'
   belongs_to :semantic_relation_tag
 
+  validates_presence_of :semantic_relation_tag
   validates_presence_of :controller
   validates_presence_of :target
-  validates_presence_of :semantic_relation_tag
 
   validate do
     errors[:base] << "Controller and target must be in the same source division" unless controller.sentence.source_division == target.sentence.source_division

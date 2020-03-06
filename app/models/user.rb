@@ -1,7 +1,7 @@
 #--
 #
-# Copyright 2009-2012 University of Oslo
-# Copyright 2009-2017 Marius L. Jøhndal
+# Copyright 2009, 2010, 2011, 2012 University of Oslo
+# Copyright 2009, 2010, 2011, 2012 Marius L. Jøhndal
 #
 # This file is part of the PROIEL web application.
 #
@@ -25,12 +25,12 @@ class User < ActiveRecord::Base
     :recoverable, :rememberable, :trackable, :validatable,
     :encryptable
 
-  #attr_accessible :login, :first_name, :last_name, :email,
-  #  :password, :password_confirmation, :role,
-  #  :graph_method
+  attr_accessible :login, :first_name, :last_name, :email,
+    :password, :password_confirmation, :role,
+    :graph_method, :graph_format
 
   has_many :assigned_sentences, :class_name => 'Sentence', :foreign_key => 'assigned_to'
-  has_many :audits, :class_name => 'Audited::Audit'
+  has_many :audits, :class_name => 'Audited::Adapters::ActiveRecord::Audit'
   has_many :notes, :as => :originator
 
   validates_presence_of :login, :message => 'cannot be blank.'
@@ -39,7 +39,7 @@ class User < ActiveRecord::Base
   validates_presence_of :first_name, :message => 'cannot be blank.'
   validates_presence_of :last_name, :message => 'cannot be blank.'
 
-  store :preferences, accessors: [:graph_method]
+  store :preferences, accessors: [:graph_format, :graph_method]
 
   # Returns the user's full name.
   def full_name

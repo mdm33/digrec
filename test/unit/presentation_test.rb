@@ -1,4 +1,4 @@
-require 'test_helper'
+require File.dirname(__FILE__) + '/../test_helper'
 
 class PresentationTestCase < ActiveSupport::TestCase
   fixtures :tokens
@@ -9,7 +9,7 @@ class PresentationTestCase < ActiveSupport::TestCase
 
     assert_equal "cum", t.form
 
-    assert_nil t.presentation_before
+    assert_equal nil, t.presentation_before
     assert_equal ", ", t.presentation_after
 
     assert_equal "cum, ", t.to_s

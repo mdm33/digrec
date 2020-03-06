@@ -1,7 +1,8 @@
+# encoding: UTF-8
 #--
 #
-# Copyright 2009-2013 University of Oslo
-# Copyright 2009-2017 Marius L. Jøhndal
+# Copyright 2007, 2008, 2009, 2010, 2011, 2012, 2013, 2014 University of Oslo
+# Copyright 2007, 2008, 2009, 2010, 2011, 2012, 2013, 2014 Marius L. Jøhndal
 #
 # This file is part of the PROIEL web application.
 #
@@ -21,6 +22,9 @@
 #++
 
 class Lemma < ActiveRecord::Base
+  attr_accessible :lemma, :variant, :gloss, :foreign_ids, :language_tag,
+    :part_of_speech_tag
+
   change_logging
 
   blankable_attributes :foreign_ids, :gloss
@@ -71,10 +75,6 @@ class Lemma < ActiveRecord::Base
   end
 
   def to_label
-    export_form
-  end
-
-  def form
     export_form
   end
 
@@ -138,13 +138,13 @@ class Lemma < ActiveRecord::Base
   # Returns an array of all parts of speech represented among lemmata. The
   # parts of speech are sorted using +to_label+ as sort key.
   def self.represented_parts_of_speech
-    Lemma.distinct.select(:part_of_speech_tag).map(&:part_of_speech).sort_by(&:to_label)
+    Lemma.uniq.select(:part_of_speech_tag).map(&:part_of_speech).sort_by(&:to_label)
   end
 
   # Returns an array of all languages represented among lemmata. The languages
   # are sorted using +to_label+ as sort key.
   def self.represented_languages
-    Lemma.distinct.select(:language_tag).map(&:language).sort_by(&:to_label)
+    Lemma.uniq.select(:language_tag).map(&:language).sort_by(&:to_label)
   end
 
   def language_name

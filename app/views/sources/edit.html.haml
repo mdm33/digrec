@@ -1,33 +1,27 @@
-- title @source.author_and_title
-- breadcrumbs ['Home', root_path], @source, 'Edit'
+- context_bar do
+  .breadcrumbs
+    != breadcrumbs ['Contents', sources_path], @source, 'Edit'
 
-= simple_form_for @source do |form|
-  != form.input :code
+= semantic_form_for @source do |form|
+  != form.input :code, :as => :string
   != form.input :citation_part
-  != form.input :language_tag, label: 'Language', collection: LanguageTag.all
-  != form.input :author
-  != form.input :title
+  != form.input :language_tag, :label => 'Language', :collection => LanguageTag.all
+  != form.input :author, :as => :string
+  != form.input :title, :as => :string
+  != form.inputs 'Treebank' do
+    %small
+      These fields contain additional information pertaining to the treebank itself.
+    - Proiel::Metadata::treebank_fields_and_labels.each do |(f, l)|
+      != form.input f, label: l
+  != form.inputs 'Electronic text' do
+    %small
+      These fields contain additional information pertaining to the electronic text used as a basis for the treebank.
+    - Proiel::Metadata::electronic_text_fields_and_labels.each do |(f, l)|
+      != form.input f, label: l
+  != form.inputs 'Printed text' do
+    %small
+      These fields contain additional information pertaining to the printed text used as a basis for the electronic text.
+    - Proiel::Metadata::printed_text_fields_and_labels.each do |(f, l)|
+      != form.input f, label: l
 
-  %hr
-  %h3.subtitle Treebank
-  %small
-    These fields contain additional information pertaining to the treebank itself.
-  - Proiel::Metadata::treebank_fields_and_labels.each do |(f, l)|
-    != form.input f, label: l
-
-  %hr
-  %h3.subtitle Electronic text
-
-  %small
-    These fields contain additional information pertaining to the electronic text used as a basis for the treebank.
-  - Proiel::Metadata::electronic_text_fields_and_labels.each do |(f, l)|
-    != form.input f, label: l
-
-  %hr
-  %h3.subtitle Printed text
-  %small
-    These fields contain additional information pertaining to the printed text used as a basis for the electronic text.
-  - Proiel::Metadata::printed_text_fields_and_labels.each do |(f, l)|
-    != form.input f, label: l
-
-  != form.button :submit, 'Update'
+  != form.submit 'Update'
