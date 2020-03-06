@@ -1,7 +1,7 @@
 en:
   short_title: DiGreC
   title: The DiGreC Treebank
-  opensearch_description: Search the DiGrec treebank for words, lemmata or locations
+  opensearch_description: Search the DiGreC treebank for words, lemmata or locations
   preferences:
     edit:
       png: "PNG (bitmap)"
