@@ -75,8 +75,6 @@ This generates a file called `.env` with run-time settings that are unique to th
 
 The `.env` file contains information that should not be made public. Make sure that other users on your system are unable to read `.env`. It is also not a good idea to add the file to a public version control system.
 
-You may also need to modify `config/initializers/mailer.rb` to get registration e-mails working properly.
-
 ### Step 5: Precompile assets
 
 For the production environment, assets should be precompiled:
