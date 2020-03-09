@@ -109,7 +109,7 @@ For production environments, see your web server's documentation for how to run 
 
 The easiest way to run DiGreC on Windows is using the Windows Subsystem for Linux.  By installing the Linux versions of Ruby and Rails, it should be possible to run DiGreC with little modification.
 
-If the Windows Subsystem for Linux is not available, it may be possible to run DiGreC using native Windows versions of Ruby and Rails.  If you wish to attempt this, please replace `Gemfile` and `Gemfile.lock` with `Gemfile.win` and `Gemfile.lock.win`.  Many of the gems used in this application require native extensions that will need to be compiled for Windows during the installation process.  Some intervention may be needed in order for them to compile directly; the exact steps involved will vary depending on your development environment, as these can vary quite widely.
+If the Windows Subsystem for Linux is not available, it may be possible to run DiGreC using native Windows versions of Ruby and Rails.  If you wish to attempt this, please replace `Gemfile` and `Gemfile.lock` with `Gemfile.win` and `Gemfile.lock.win`.  Many of the gems used in this application require native extensions that will need to be compiled for Windows during the installation process.  Some intervention may be needed in order for them to compile correctly; the exact steps involved will vary depending on your development environment, as these can differ quite widely.
 
 ## Editing locale files
 
