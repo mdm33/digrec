@@ -3,7 +3,7 @@
 #
 # Copyright 2007, 2008, 2009, 2010, 2011, 2012, 2013 University of Oslo
 # Copyright 2007, 2008, 2009, 2010, 2011, 2012, 2013 Marius L. Jøhndal
-# New material copuright 2020 Morgan Macleod
+# New material copyright 2020 Morgan Macleod
 #
 # This file is part of the PROIEL web application.
 #
