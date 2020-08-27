@@ -3,6 +3,7 @@
 #
 # Copyright 2007, 2008, 2009, 2010, 2011, 2012, 2013 University of Oslo
 # Copyright 2007, 2008, 2009, 2010, 2011, 2012, 2013 Marius L. Jøhndal
+# New material copuright 2020 Morgan Macleod
 #
 # This file is part of the PROIEL web application.
 #
@@ -23,7 +24,7 @@
 
 module Proiel
   module Jobs
-    class DatabaseValidator < Jobs
+    class DatabaseValidator < Job
       def run_once!
         Dir.glob(Rails.root.join('app', 'models', '**', '*.rb')).each do |file_name|
           klass = File.basename(file_name, '.rb').camelize.constantize
