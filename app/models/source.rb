@@ -60,6 +60,11 @@ class Source < ActiveRecord::Base
     Source.uniq.pluck(:language_tag).map { |l| LanguageTag.new(l) }.sort_by(&:to_label)
   end
 
+  # Returns an array of all dates represented in sources.
+  def self.represented_dates
+    Source.where("Instr(additional_metadata,'printed_text_date: ') > 0").uniq.pluck("Mid(additional_metadata,Instr(additional_metadata,'printed_text_date: ')+19)").map { |l| l.strip! }.sort!
+  end
+
   def to_label
     title
   end
