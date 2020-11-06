@@ -20,23 +20,23 @@
     %script{:type => "text/javascript"}
       {var nl = document.querySelectorAll('.formatted-text'); for (var i = 0; i < nl.length; i++) {nl[i].insertAdjacentHTML('beforeend', '<br>&nbsp;<br>' + romanize(nl[i].innerHTML));}}
 
-  .section-heading
-    %h1 Annotation status
-    - if @sentence.is_annotated? and is_reviewer?
+  - if is_annotator?
+    .section-heading
+      %h1 Annotation status
+      - if @sentence.is_annotated? and is_reviewer?
+        - if @sentence.is_reviewed?
+          != link_to "(Change to not reviewed)", flag_as_not_reviewed_sentence_path(@sentence)
+        - else
+          != link_to "(Change to reviewed)", flag_as_reviewed_sentence_path(@sentence)
+      %p
+        != format_annotator_and_time @sentence
+        %br
+        != format_reviewer_and_time @sentence
+
       - if @sentence.is_reviewed?
-        != link_to "(Change to not reviewed)", flag_as_not_reviewed_sentence_path(@sentence)
-      - else
-        != link_to "(Change to reviewed)", flag_as_reviewed_sentence_path(@sentence)
-
-  %p
-    != format_annotator_and_time @sentence
-    %br
-    != format_reviewer_and_time @sentence
-
-  - if @sentence.is_reviewed?
-    %p
-      - if @sentence.valid?
-        Annotation is valid.
+        %p
+          - if @sentence.valid?
+            Annotation is valid.
 
   .section-heading
     %h1 Morphology
