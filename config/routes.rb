@@ -71,6 +71,13 @@ Proiel::Application.routes.draw do
 
   resources :semantic_tags, :only => [:index, :show]
 
+  resource :help, :only => [:index, :ack, :ss] do
+    member do
+      get :ack, controller: 'help'
+      get :ss, controller: 'help'
+    end
+  end
+
   # Wizard
   match '/wizard/:action', :to => 'wizard#:action'
   match '/wizard',         :to => 'wizard#index'
@@ -81,5 +88,5 @@ Proiel::Application.routes.draw do
   match '/opensearch.:format', :to => 'tokens#opensearch'
 
   # Default page
-  root :to => 'sources#index'
+  root :to => 'help#index'
 end
