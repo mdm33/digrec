@@ -14,22 +14,20 @@
         != f.input :sentence_source_division_source_language_tag_eq, :label => 'Language', :collection => Source.represented_languages, :required => false
       - if Source.all.count > 1
         != f.input :sentence_source_division_source_id_eq, :label => 'Source', :collection => Source.all.sort_by(&:to_label), :required => false
-      != f.input :sentence_status_tag_eq, :label => 'Sentence status', collection: StatusTag.all.map { |t| [t.to_label, t.tag] }, :required => false
       %label{:for => "animacy"} Animacy
       %select{:id => "animacy", :name => "animacy"}
         %option
         != "<option #{params['animacy'] == 'a' ? 'selected=true' : ''}> a"
         != "<option #{params['animacy'] == 'i' ? 'selected=true' : ''}> i"
         != "<option #{params['animacy'] == 'p' ? 'selected=true' : ''}> p"
+      != f.input :sentence_source_division_source_additional_metadata_cont_any, :label => 'Date', :collection => Source.represented_dates, :required => false, :multiple => true
     ._25
-      != f.input :form_wildcard_matches, :label => 'Token form', :required => false, :hint => '* matches any string (Greek only); ? matches any character (Greek/BetaCode)'
+      != f.input :form_wildcard_matches, :label => 'Token form', :required => false, :hint => '* matches any string (Greek only); ? matches any character (Greek/<a href="http://www.tlg.uci.edu/encoding/quickbeta.pdf" target="_blank" style="padding-right:0pt;background-image:none">BetaCode</a>)'.html_safe
       %div
         ._l67
           != f.input :lemma_lemma_wildcard_matches, :label => 'Lemma form', :required => false
         ._r33
           != f.input :lemma_variant_eq, :label => 'Variant', :required => false
-        /.inline-hints
-        /  ? matches any character, * any string
       != f.input :lemma_part_of_speech_tag_eq, :label => 'Part of speech', :collection => Lemma.represented_parts_of_speech, :required => false
       != f.input :relation_tag_eq, :label => 'Relation', collection: RelationTag.all.map { |t| [t.to_label, t.tag] }, :required => false
       /!= f.input :information_status_tag_eq, :label => 'Information status', collection: InformationStatusTag.all.map { |t| [t.to_label, t.tag] }, :required => false
