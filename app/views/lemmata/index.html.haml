@@ -10,7 +10,7 @@
     ._r33
       != f.input :variant_eq, :label => 'Lemma variant', :required => false
     .inline-hints
-      * matches any string (Greek only); ? matches any character (Greek/BetaCode)
+      * matches any string (Greek only); ? matches any character (Greek/<a href="http://www.tlg.uci.edu/encoding/quickbeta.pdf" target="_blank" style="padding-right:0pt;background-image:none">BetaCode</a>)
   != f.input :part_of_speech_tag_eq, :label => 'Part of speech', :collection => Lemma.represented_parts_of_speech, :required => false
   != f.submit "Search"
 
