@@ -1,6 +1,6 @@
 ﻿"Sentence ID","Citation","Token ID","Text before token","Token form","Text after token","Token lemma","Head","Head lemma","Relation"
 <%- if @x %>
 <%- @x.find_each do |t| %>
-<%=raw [t.sentence.id, t.citation, t.id, *t.sentence_context_to_s, t.lemma.lemma, t.head.form, t.head.lemma.lemma, t.relation_tag].map { |s| "\"#{s}\"" }.join(',') %>
+<%=raw [t.sentence.id, t.citation, t.id, *t.sentence_context_to_s, t.lemma.lemma, (t.head.nil? ? "" : t.head.form), (t.head.nil? ? "" : (t.head.lemma.nil? ? "" : t.head.lemma.lemma)), t.relation_tag].map { |s| "\"#{s}\"" }.join(',') %>
 <% end %>
 <% end %>
