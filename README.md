@@ -131,10 +131,14 @@ To open a console, run
 $ bin/rails c
 ```
 
+## Data
+
+For convenience, we have also included copies of the data files from the current version of the DiGreC corpus.  The primary repository for this dataset is at [https://doi.org/10.21251/59fd3210-83fe-4d1c-8d18-f2cd1168ccd6](https://doi.org/10.21251/59fd3210-83fe-4d1c-8d18-f2cd1168ccd6), which includes credits and citation information; however, the files on this site provide some additional data formats which may be useful for testing and development.  The file digrec.xml contains the full XML version of the corpus, as exported by rake.  The csv files represent a streamlined version of the relational database used by the Rails server, and should contain all the information exposed through the web interface.  There is also a list of the verb lexemes that have been explicitly targeted by the DiGreC project to date.
+
 ## License
 
-DiGreC is licensed under the terms of the GNU General Public License version 2. See the file `COPYING` for details.
-
+The DiGreC web application is licensed under the terms of the GNU General Public License version 2. See the file `COPYING` for details.
 PROIEL Annotator was written by Marius L. Jøhndal (University of Cambridge/University of Oslo), Dag Haug (University of Oslo) and Anders Nøklestad (University of Oslo).
-
 DiGreC was adapted and developed by Morgan Macleod (Ulster University).
+
+The DiGreC data files are licensed under the terms of the [Open Data Commons Attribution License (ODC-By) v1.0](https://opendatacommons.org/licenses/by/1-0/)
