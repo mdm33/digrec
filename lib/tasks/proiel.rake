@@ -29,6 +29,18 @@ namespace :proiel do
       PROIELXMLImporter.new.read(ENV['FILE'], id_map_file: ENV['ID_MAP_FILE'])
     end
 
+    desc "Export full contents in CSV format. Options: EXPORT_DIRECTORY=destination_directory"
+    task(:csv => :environment) do
+      zip=false
+      if ENV['ZIP']
+        if ENV['ZIP'] == 'true'
+          zip=true
+        end
+      end
+      exporter = Proiel::Jobs::CSV.new(ENV['EXPORT_DIRECTORY'] || '.', Logger.new(STDOUT), zip)
+      exporter.run_once!
+    end
+
     desc "Export a PROIEL source text. Options: ID=database_ID_of_source EXPORT_DIRECTORY=destination_directory SEMANTIC_TAGS={false|true} SOURCE_DIVISION=source_division_title_regexp"
     task(:export => :environment) do
       options = {}
