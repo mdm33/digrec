@@ -1,13 +1,17 @@
 class ApplicationController < ActionController::Base
   protect_from_forgery
-  before_filter :authenticate_user!
+  #before_filter :authenticate_user!
 
   helper :all
 
   layout 'application'
 
   def user_is_reviewer?
-    current_user.has_role?(:reviewer)
+    if user_signed_in?
+      current_user.has_role?(:reviewer)
+    else
+      false
+    end
   end
 
   helper_method :user_preferences
@@ -25,12 +29,16 @@ class ApplicationController < ActionController::Base
   end
 
   def check_role(role)
-    unless user_signed_in? && current_user.has_role?(role)
-      if user_signed_in?
+    if user_signed_in?
+      unless current_user.has_role?(role)
         flash[:error] = 'You do not have permission to access this feature.'
         redirect_to "/"
+      end
+    else
+      if role == :reader
+        true
       else
-        access_denied
+        redirect_to new_user_session_path
       end
     end
   end
