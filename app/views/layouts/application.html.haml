@@ -24,16 +24,19 @@
         != link_to 'Contents', sources_path, accesskey: '1'
         != link_to 'Dictionary', lemmata_path
         != link_to 'Search', tokens_path, accesskey: 'S'
-        != link_to 'Semantic tags', semantic_tags_path
+        - if user_signed_in?
+          - if is_reviewer?
+            != link_to 'Semantic tags', semantic_tags_path
         /- if is_annotator?
         /  != link_to 'Annotation', wizard_path
-        - if is_reviewer?
-          != link_to 'Changelog', audits_path
-          != link_to 'Users', users_path
+        - if user_signed_in?
+          - if is_reviewer?
+            != link_to 'Changelog', audits_path
+            != link_to 'Users', users_path
         - if user_signed_in?
           != link_to 'Your profile', edit_profile_path
         - if user_signed_in?
-          != link_to 'Logout', destroy_user_session_path
+          != link_to 'Sign out', destroy_user_session_path
         - else
           != link_to 'Sign in', new_user_session_path
         /!= link_to 'Help', 'https://github.com/mlj/proiel-webapp/wiki', accesskey: '6'
@@ -60,8 +63,8 @@
       %span.tag proiel
       != "version #{PROIEL::VERSION},"
       %span.tag digrec
-      != "version 1.1.0"
+      != "version 1.2.0"
       %br
       This site is based on the PROIEL web application, copyright 2007-2016 University of Oslo, Marius L. Jøhndal, Dag Haug and Anders Nøklestad, and released under the GNU General Public License version 2.
       %br
-      New functionality copyright 2019-2020 by Morgan Macleod, University of Ulster, and released under the GNU General Public License version 2.
+      New functionality copyright 2019-2022 by Morgan Macleod, University of Ulster, and released under the GNU General Public License version 2.
