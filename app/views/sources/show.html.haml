@@ -1,6 +1,7 @@
 %h2.ui.header
   = @source.author_and_title
-  != link_to_resources @source, :edit
+  - if is_administrator?
+    != link_to_resources @source, :edit
 
 - metadata_fields_and_labels(@source).each do |header, fields_and_values|
   - unless fields_and_values.empty?
@@ -14,14 +15,14 @@
             %td.twelve.wide
               != (field == "Original URL" ? "<a target='_blank' href='" + value + "'>" : "") + value + (field == "Original URL" ? "</a>" : "")
 
-%p.centered-images
-  - if @activity_stats.length > 1
-    != line_chart "Recent activity", @activity_stats
-
-%p.centered-images
-  != statistics "Completion", "sentence", @sentence_completion_stats
-  != statistics "Annotators", "sentence", @annotated_by_stats
-  != statistics "Reviewers", "sentence", @reviewed_by_stats
+- if is_administrator?
+  %p.centered-images
+    - if @activity_stats.length > 1
+      != line_chart "Recent activity", @activity_stats
+  %p.centered-images
+    != statistics "Completion", "sentence", @sentence_completion_stats
+    != statistics "Annotators", "sentence", @annotated_by_stats
+    != statistics "Reviewers", "sentence", @reviewed_by_stats
 
 %h3.ui.header
   Table of contents
