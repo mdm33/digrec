@@ -1,8 +1,9 @@
 - context_bar do
   .breadcrumbs
     != breadcrumbs ['Dictionary', lemmata_path], @lemma
-  .resources
-    != link_to_resources @lemma, :edit
+  - if is_administrator?
+    .resources
+      != link_to_resources @lemma, :edit
 
 - layer_if((is_reviewer? and !@mergeable_lemmata.empty?), "similar_lemmata") do
   %ul
