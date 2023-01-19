@@ -3,7 +3,10 @@
     != breadcrumbs ['Contents', sources_path], @source, @source_division
     != completion_rate @source_division.cached_status_tag
   .resources
-    != link_to_resources @source_division, :edit, :previous, :next
+    - if is_administrator?
+      != link_to_resources @source_division, :edit, :previous, :next
+    - else
+      != link_to_resources @source_division, :previous, :next
   %p
     - if @source_division.aligned_source_division
       != link_to 'Show sentence alignments', alignment_path(@source_division)
