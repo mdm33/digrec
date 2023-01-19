@@ -4,7 +4,10 @@
     != breadcrumbs ['Contents', sources_path], @source, @source_division, @sentence
     != completion_rate @sentence.status
   .resources
-    != link_to_resources @sentence, :edit, :previous, :next
+    - if is_administrator?
+      != link_to_resources @sentence, :edit, :previous, :next
+    - else
+      != link_to_resources @sentence, :previous, :next
   %p
     != external_text_links @sentence
     != export_links @sentence
