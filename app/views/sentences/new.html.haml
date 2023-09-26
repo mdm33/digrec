@@ -1,0 +1,15 @@
+- context_bar do
+  .breadcrumbs
+    != breadcrumbs ['Contents', sources_path], @sentence.source_division.source, @sentence.source_division, 'New'
+  %p
+    != external_text_links @sentence
+
+= semantic_form_for @sentence do |form|
+  != form.input :id, :label => "Insert before", :as => :select, :collection => Sentence.where("source_division_id = ?",@sentence.source_division.id).order(:sentence_number)
+  != form.input :presentation_before, :required => false, :label => 'Presentation text before sentence'
+  != form.input :presentation_after, :required => false, :label => 'Presentation text after sentence'
+  != form.input :annotated_by, :as => :string, :required => false, :label => 'Citation part', :input_html => {:maxlength => '255'}
+  != form.input :assigned_to, :as => :text, :required => true, :label => 'Sentence content'
+  != form.input :unalignable, :as => :boolean, :label => ' Attempt automatic tagging (experimental)', :input_html => {:style => 'width:auto;'}
+  != form.input :source_division, :as => :hidden, :input_html => {:value => @sentence.source_division.id}
+  != form.submit 'Create'
