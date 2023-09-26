@@ -3,7 +3,7 @@
 #
 # Copyright 2009, 2010, 2011, 2012, 2013 University of Oslo
 # Copyright 2009, 2010, 2011, 2012, 2013 Marius L. Jøhndal
-# New material copyright 2019, 2020 by Morgan Macleod
+# New material copyright 2019, 2020, 2023 by Morgan Macleod
 #
 # This file is part of the PROIEL web application.
 #
@@ -67,7 +67,7 @@ class TokensController < ApplicationController
   end
 
   def update
-    normalize_unicode_params! params[:token], :presentation_before, :presentation_after, :form
+    normalize_unicode_params! params[:token], :presentation_before, :form
 
     @token = Token.find(params[:id])
     @token.update_attributes(params[:token])

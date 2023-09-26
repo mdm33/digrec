@@ -2,6 +2,7 @@
 #
 # Copyright 2007-2012 University of Oslo
 # Copyright 2007-2016 Marius L. Jøhndal
+# New material copyright 2023 by Morgan Macleod
 #
 # This file is part of the PROIEL web application.
 #
@@ -22,12 +23,12 @@
 
 class SourcesController < ApplicationController
   respond_to :html, :xml
-  before_filter :is_administrator?, :only => [:edit, :update]
+  before_filter :is_administrator?, :only => [:create, :new, :edit, :update]
 
   rescue_from ActiveRecord::RecordNotFound, :with => :record_not_found
 
   def index
-    @sources = Source.order(:language_tag).order(:id).page(current_page).per(90)
+    @sources = Source.order(:id).page(current_page).per(90)
 
     respond_with @sources
   end
@@ -45,16 +46,58 @@ class SourcesController < ApplicationController
     respond_with @source
   end
 
+  def new
+    @source = Source.new
+
+    respond_with @source
+  end
+
   def edit
     @source = Source.find(params[:id])
 
     respond_with @source
+  end
+  
+  def create
+    sourcenum = 0
+	unless params[:source][:id].nil?
+	  unless params[:source][:id] == ''
+	    sourcenum = params[:source][:id].to_i
+	  end
+	end
+	
+	if sourcenum <= 0
+	  @source = Source.new
+	else
+	  t = Source.last.id
+	  while t >= sourcenum
+	    ActiveRecord::Base.connection.execute "UPDATE sources SET id = id+1 WHERE id = #{t};"
+	    t -= 1
+	  end
+	  ActiveRecord::Base.connection.execute "UPDATE source_divisions SET source_id = source_id+1 WHERE source_id >= #{sourcenum};"
+	  ActiveRecord::Base.connection.execute "INSERT INTO sources SET id = #{sourcenum}, code = '';"
+	  @source = Source.find(sourcenum)
+	end
+	
+	normalize_unicode_params! params[:source], :author, :title
+	
+	@source.code = params[:source][:code]
+	@source.citation_part = params[:source][:citation_part]
+	@source.language_tag = params[:source][:language_tag]
+	@source.author = params[:source][:author]
+	@source.title = params[:source][:title]
+	@source.electronic_text_original_url = params[:source][:electronic_text_original_url]
+	@source.printed_text_date = params[:source][:printed_text_date]
+	@source.save
+	
+	respond_with @source
   end
 
   def update
     normalize_unicode_params! params[:source], :author
 
     @source = Source.find(params[:id])
+	params[:source].delete_if {|key, value| value == "" }
     @source.update_attributes(params[:source])
 
     respond_with @source
