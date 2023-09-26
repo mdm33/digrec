@@ -13,7 +13,8 @@
       - if Source.represented_languages.count > 1
         != f.input :sentence_source_division_source_language_tag_eq, :label => 'Language', :collection => Source.represented_languages, :required => false
       - if Source.all.count > 1
-        != f.input :sentence_source_division_source_id_eq, :label => 'Source', :collection => Source.all.sort_by(&:to_label), :required => false
+        != f.input :sentence_source_division_source_author_eq, :label => 'Author', :collection => Source.uniq.pluck(:author).map { |l| [l,l] }.sort, :required => false
+        != f.input :sentence_source_division_source_title_eq, :label => 'Source', :collection => Source.uniq.pluck(:title).map { |l| [l,l] }.sort, :required => false
       %label{:for => "animacy"} Animacy
       %select{:id => "animacy", :name => "animacy"}
         %option
@@ -22,7 +23,7 @@
         != "<option #{params['animacy'] == 'p' ? 'selected=true' : ''}> p"
       != f.input :sentence_source_division_source_additional_metadata_cont_any, :label => 'Date', :collection => Source.represented_dates, :required => false, :multiple => true
     ._25
-      != f.input :form_wildcard_matches, :label => 'Token form', :required => false, :hint => '* matches any string (Greek only); ? matches any character (Greek/<a href="http://www.tlg.uci.edu/encoding/quickbeta.pdf" target="_blank" style="padding-right:0pt;background-image:none">BetaCode</a>)'.html_safe
+      != f.input :form_wildcard_matches, :label => 'Token form', :required => false, :hint => '* matches any string (Greek only); ? matches any character (Greek/<a href="http://stephanus.tlg.uci.edu/encoding/quickbeta.pdf" target="_blank" style="padding-right:0pt;background-image:none">BetaCode</a>)'.html_safe
       %div
         ._l67
           != f.input :lemma_lemma_wildcard_matches, :label => 'Lemma form', :required => false
