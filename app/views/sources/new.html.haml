@@ -1,0 +1,15 @@
+- context_bar do
+  .breadcrumbs
+    != breadcrumbs ['Contents', sources_path], 'New'
+
+= semantic_form_for @source do |form|
+  != form.input :id, :label => "Insert before", :as => :select, :collection => Hash[Source.all.map{|s| [s.code + " (" + s.title + ")",s.id]}]
+  != form.input :code, :as => :string, :required => true
+  != form.input :citation_part
+  != form.input :language_tag, :label => 'Language', :include_blank => false, :collection => {"Ancient Greek (to 1453)" => "grc", "Modern Greek (1453-)" => "ell"}
+  != form.input :author, :as => :string, :required => true
+  != form.input :title, :as => :string
+  != form.input :electronic_text_original_url, label: "Original URL", :as => :string
+  != form.input :printed_text_date, label: "Date", :as => :string
+
+  != form.submit 'Create'

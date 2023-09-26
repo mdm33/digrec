@@ -4,11 +4,6 @@
   Table of contents
 
 .ui.list
-  - @sources.group_by(&:language_name).sort.each do |language_name, sources|
+  - @sources.sort.each do |sources|
     .item
-      .header
-        = language_name
-      .ui.list
-        - sources.each do |source|
-          .item
-            != link_to source.author_and_title, source
+      != link_to sources.author_and_title, sources

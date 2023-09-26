@@ -35,3 +35,5 @@
     .item
       != completion_rate source_division.cached_status_tag
       != link_to "#{source_division.title} (#{source_division.cached_citation})", source_division
+  - if is_administrator?
+    != link_to "Add new", new_source_division_path + '?source=' + @source.id.to_s
