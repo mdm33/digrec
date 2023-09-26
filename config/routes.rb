@@ -8,9 +8,9 @@ Proiel::Application.routes.draw do
 
   resources :audits, :only => [:index, :destroy]
 
-  resources :sources, :only => [:index, :show, :edit, :update]
+  resources :sources, :only => [:index, :show, :new, :create, :edit, :update]
 
-  resources :source_divisions, :only => [:show, :edit, :update] do
+  resources :source_divisions, :only => [:show, :new, :create, :edit, :update] do
     resource :discourse
   end
 
@@ -37,7 +37,7 @@ Proiel::Application.routes.draw do
     get :opensearch, on: :collection
   end
 
-  resources :sentences, :only => [:show, :edit, :update] do
+  resources :sentences, :only => [:show, :new, :create, :edit, :update] do
     member do
       get :merge
       get :tokenize
