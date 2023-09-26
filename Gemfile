@@ -8,7 +8,7 @@ gem 'proiel', '1.1.1'
 
 gem 'formtastic'
 gem 'kaminari'
-gem 'haml'
+gem 'haml', '~> 4.0.4'
 gem 'devise', '~> 2.2.4'
 gem 'devise-encryptable'
 gem 'exception_notification', '~> 3.0.1'

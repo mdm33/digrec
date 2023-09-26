@@ -205,7 +205,7 @@ DEPENDENCIES
   foreman
   formtastic
   gchartrb
-  haml
+  haml (~> 4.0.4)
   iso-codes
   json
   kaminari
@@ -226,6 +226,3 @@ DEPENDENCIES
   test-unit
   unicode
   unicorn
-
-BUNDLED WITH
-   1.17.1

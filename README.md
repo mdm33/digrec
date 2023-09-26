@@ -105,12 +105,6 @@ This will run the site with your system's default web server.  *Make sure that y
 
 For production environments, see your web server's documentation for how to run Rails applications.
 
-## For Windows users
-
-The easiest way to run DiGreC on Windows is using the Windows Subsystem for Linux.  By installing the Linux versions of Ruby and Rails, it should be possible to run DiGreC with little modification.
-
-If the Windows Subsystem for Linux is not available, it may be possible to run DiGreC using native Windows versions of Ruby and Rails.  If you wish to attempt this, please replace `Gemfile` and `Gemfile.lock` with `Gemfile.win` and `Gemfile.lock.win`.  Many of the gems used in this application require native extensions that will need to be compiled for Windows during the installation process.  Some intervention may be needed in order for them to compile correctly; the exact steps involved will vary depending on your development environment, as these can differ quite widely.
-
 ## Editing locale files
 
 Some key strings used by the application, such as the application's title, can
@@ -131,14 +125,24 @@ To open a console, run
 $ bin/rails c
 ```
 
-## Data
+## For Windows users
 
-For convenience, we have also included copies of the data files from the current version of the DiGreC corpus.  The primary repository for this dataset is at [https://doi.org/10.21251/59fd3210-83fe-4d1c-8d18-f2cd1168ccd6](https://doi.org/10.21251/59fd3210-83fe-4d1c-8d18-f2cd1168ccd6), which includes credits and citation information; however, the files on this site provide some additional data formats which may be useful for testing and development.  The file digrec.xml contains the full XML version of the corpus, as exported by rake.  The csv files represent a streamlined version of the relational database used by the Rails server, and should contain all the information exposed through the web interface.  There is also a list of the verb lexemes that have been explicitly targeted by the DiGreC project to date.
+The easiest way to run DiGreC on Windows is using the Windows Subsystem for Linux.  By installing the Linux versions of Ruby and Rails, it should be possible to run DiGreC with little modification.
+
+If the Windows Subsystem for Linux is not available, it may be possible to run DiGreC using native Windows versions of Ruby and Rails.  If you wish to attempt this, please replace `Gemfile` and `Gemfile.lock` with `Gemfile.win` and `Gemfile.lock.win`.  Many of the gems used in this application require native extensions that will need to be compiled for Windows during the installation process.  Some intervention may be needed in order for them to compile correctly; the exact steps involved will vary depending on your development environment, as these can differ quite widely.
+
+## New in version 1.3.0
+
+This version adds `new`/`create` paths to allow dynamic additions to an existing corpus via a web interface. When a new sentence is added, the option is given to attempt to tag tokens automatically for lemma and morphology. This feature looks only at similarity to existing corpus data and requires a large existing corpus to be effective. The output of automatic tagging should always be manually checked.
+
+### Warning
+
+The web interface should not be used to add new data in a production environment. This feature may cause URL references to change unexpectedly and/or invalidate objects held by other users. Note that the path `/sources/new` is not exposed in the user interface.
 
 ## License
 
-The DiGreC web application is licensed under the terms of the GNU General Public License version 2. See the file `COPYING` for details.
-PROIEL Annotator was written by Marius L. Jøhndal (University of Cambridge/University of Oslo), Dag Haug (University of Oslo) and Anders Nøklestad (University of Oslo).
-DiGreC was adapted and developed by Morgan Macleod (Ulster University).
+DiGreC is licensed under the terms of the GNU General Public License version 2. See the file `COPYING` for details.
 
-The DiGreC data files are licensed under the terms of the [Open Data Commons Attribution License (ODC-By) v1.0](https://opendatacommons.org/licenses/by/1-0/)
+PROIEL Annotator was written by Marius L. Jøhndal (University of Cambridge/University of Oslo), Dag Haug (University of Oslo) and Anders Nøklestad (University of Oslo).
+
+DiGreC was adapted and developed by Morgan Macleod (Ulster University).
