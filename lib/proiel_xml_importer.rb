@@ -4,7 +4,7 @@
 # Copyright 2007, 2008, 2009, 2010, 2011, 2012, 2013, 2014, 2015 University of Oslo
 # Copyright 2007, 2008, 2009, 2010, 2011, 2012, 2013, 2014, 2015 Marius L. Jøhndal
 # Copyright 2007, 2008, 2009, 2010, 2011, 2012 Dag Haug
-# New material copyright 2019 Morgan Macleod
+# New material copyright 2019, 2023 Morgan Macleod
 #
 # This file is part of the PROIEL web application.
 #
@@ -30,15 +30,15 @@ class PROIELXMLImporter
 
   def read(file_name, options = {})
     File.open(file_name, 'r') do |file|
-      Source.transaction do
-        Source.disable_auditing
-        SourceDivision.disable_auditing
-        Sentence.disable_auditing
-        Token.disable_auditing
-        Lemma.disable_auditing
+#      Source.transaction do
+#        Source.disable_auditing
+#        SourceDivision.disable_auditing
+#        Sentence.disable_auditing
+#        Token.disable_auditing
+#        Lemma.disable_auditing
 
         parse(file, options)
-      end
+#      end
     end
   end
 
@@ -133,6 +133,7 @@ class PROIELXMLImporter
         SourceDivision.disable_auditing
         Sentence.disable_auditing
         Token.disable_auditing
+		Lemma.disable_auditing
 
         token_id_map = {} # map imported token IDs to database token IDs
         code = source['@id']
@@ -206,6 +207,7 @@ class PROIELXMLImporter
             # Finally, set the correct sentence status, which may trigger
             # validation of annotation
             set_attrs!(s, sentence, ['@status']) if sentence['@status']
+			puts "Sentence #{sentence['@id']} processed"
             s.save!
           end
         end

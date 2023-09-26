@@ -4,7 +4,7 @@
 # Copyright 2007, 2008, 2009, 2010, 2011, 2012, 2013, 2014 University of Oslo
 # Copyright 2007, 2008, 2009, 2010, 2011, 2012, 2013, 2014 Marius L. Jøhndal
 # Copyright 2010, 2011, 2012 Dag Haug
-# New material copyright 2019 Morgan Macleod
+# New material copyright 2019, 2023 Morgan Macleod
 #
 # This file is part of the PROIEL web application.
 #
@@ -158,7 +158,8 @@ class PROIELXMLExporter
                           %w(id status),
                           %w(presentation_before presentation_after))
 
-    builder.sentence(attrs) do
+    puts "Processing sentence #{s.id}"
+	builder.sentence(attrs) do
       yield builder
     end
   end
