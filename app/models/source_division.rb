@@ -4,6 +4,7 @@
 # Copyright 2007, 2008, 2009, 2010, 2011, 2012, 2013 University of Oslo
 # Copyright 2007, 2008, 2009, 2010, 2011, 2012, 2013 Marius L. Jøhndal
 # Copyright 2011 Dag Haug
+# New material copyright 2023 by Morgan Macleod
 #
 # This file is part of the PROIEL web application.
 #
@@ -139,9 +140,13 @@ class SourceDivision < ActiveRecord::Base
   public
 
   def has_discourse_annotation?
-    sentences.first.tokens.any? do |t|
-      t.has_relation_type?(SemanticRelationType.find_by_tag('Discourse'))
-    end
+    begin
+      sentences.first.tokens.any? do |t|
+        t.has_relation_type?(SemanticRelationType.find_by_tag('Discourse'))
+      end
+	rescue
+	  false
+	end
   end
 
   def cached_has_discourse_annotation?

@@ -3,6 +3,7 @@
 #
 # Copyright 2007, 2008, 2009, 2010, 2011, 2012, 2013 University of Oslo
 # Copyright 2007, 2008, 2009, 2010, 2011, 2012, 2013 Marius L. Jøhndal
+# New material copyright 2023 Morgan Macleod
 #
 # This file is part of the PROIEL web application.
 #
@@ -250,6 +251,67 @@ class Sentence < ActiveRecord::Base
     d[:relations] = RelationTag.all.select(&:primary)
 
     d
+  end
+  
+  def populate(txt, citation = "", guess = false)
+    ts = []
+	txt.gsub!("\r\n","\u2028 ")
+	txt.gsub!("\r","\u2028 ")
+	txt.gsub!("\n","\u2028 ")
+	words = txt.split
+	words.each_index do |w|
+	  pre = ""
+	  form = ""
+	  post = ""
+	  t = 0
+	  while t < words[w].length
+	    case words[w][t,1]
+		  when "A".."Z", "a".."z", "\u0370".."\u0373", "\u0376".."\u0377", "\u0386", "\u0388".."\u03FF", "\u1F00".."\u1F15", "\u1F18".."\u1F1D", "\u1F20".."\u1F45", "\u1F48".."\u1F4D", "\u1F50".."\u1F7D", "\u1F80".."\u1FBC", "\u1FC2".."\u1FCC", "\u1FD0".."\u1FD3", "\u1FD6".."\u1FDB", "\u1FE0".."\u1FEC", "\u1FF2".."\u1FFC"
+		    form += words[w][t,1]
+		  else
+		    if form == ""
+			  pre += words[w][t,1]
+			else
+			  post += words[w][t,1]
+			end
+		end
+	    t+=1
+	  end
+	  post += " " unless (w >= (words.length - 1) || post.include?("\u2028"))
+	  unless form == ""
+	    token = Token.new
+		token.form = form
+		token.citation_part = citation unless citation == ""
+		token.presentation_before = pre unless pre == ""
+		token.presentation_after = post unless post == ""
+		ts.push(token)
+	  end
+	end
+	if ts.length > 0
+	  append_tokens!(ts)
+	  if guess
+		ts.each do |x|
+		  tag = ''
+		  match = Token.select("form, lemma_id, morphology_tag, count(id) as num").where("lemma_id IS NOT NULL AND HEX(form) = HEX(?)",x.form).group("form").order("count(id)").first
+		  match = Token.select("form, lemma_id, morphology_tag, count(id) as num").where("lemma_id IS NOT NULL AND form = ?",x.form).group("form").order("count(id)").first if match.nil?
+		  if match.nil?
+			str = x.form.chop
+			t = 0
+			while str != ""
+			  match = Token.select("form, lemma_id, morphology_tag, count(id) as num").where("lemma_id IS NOT NULL AND form LIKE CONCAT(?,'%')",str).group("form").order("count(id)").first
+			  t += 1
+			  break if (t > 3) || !(match.nil?)
+			  str.chop!
+			end
+		  else
+		    tag = match.morphology_tag unless match.morphology_tag.nil?
+		  end
+		  unless match.nil?
+		    ActiveRecord::Base.connection.execute("UPDATE tokens SET lemma_id = #{match.lemma_id}" + (tag == "" ? " " : ", morphology_tag = '#{tag}' ") + "WHERE id = #{x.id};")
+		  end
+		end
+	  end
+	end
   end
 
   def morphological_annotation(overlaid_features = {})
