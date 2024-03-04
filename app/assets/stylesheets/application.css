@@ -17,3 +17,17 @@
  *= require dependency_alignment
  *= require info_statuses
  */
+
+.shead {
+	font-size: 13px;
+	text-align: center;
+}
+
+.sid {
+	padding-right: 0.5em;
+	text-align: right;
+}
+
+.srel {
+	background-color: transparent;
+}
