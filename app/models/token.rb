@@ -3,6 +3,7 @@
 #
 # Copyright 2007, 2008, 2009, 2010, 2011, 2012, 2013, 2014 University of Oslo
 # Copyright 2007, 2008, 2009, 2010, 2011, 2012, 2013, 2014 Marius L. Jøhndal
+# New material copyright 2024 by Morgan Macleod
 #
 # This file is part of the PROIEL web application.
 #
@@ -578,6 +579,14 @@ class Token < ActiveRecord::Base
       res[st.semantic_attribute.tag] = st.semantic_attribute_value.tag
     end
     res
+  end
+  
+  def slash_out_edges_to_hash
+    res = Hash.new
+    slash_out_edges.each do |sl|
+	  res[sl.slashee_id] = sl.relation_tag
+	end
+	res
   end
 
   # Returns the depth of the node, i.e. the distance from the root in number of edges.
