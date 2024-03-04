@@ -25,6 +25,19 @@
 var authenticity_param;
 var authenticity_token;
 
+function tokenEditSubmit(event) {
+	var slash = document.getElementById("slashes");
+	if (slash) {
+		var str = '';
+		var ids = document.getElementsByClassName("sid");
+		var rels = document.getElementsByClassName("srel");
+		for (var t = 0; t < ids.length && t < rels.length; t++) {
+			str = str + ids[t].innerText + ',' + rels[t].value + ';';
+		}
+		slash.value = str;
+	}
+}
+
 function setup() {
   authenticity_param = document.querySelector('meta[name="csrf-param"]').content;
   authenticity_token = document.querySelector('meta[name="csrf-token"]').content;
