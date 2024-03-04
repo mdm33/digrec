@@ -11,7 +11,7 @@
     != f.input :presentation_before, :required => false, :label => 'Presentation text before token'
     != f.input :presentation_after, :required => false, :label => 'Presentation text after token'
     != f.input :citation_part, :required => false, :label => 'Citation', :hint => 'The part of the citation that is not shared between all tokens in the source'
-    != f.input :lemma, :collection => @token.language.lemmata, :required => false
+    / != f.input :lemma, :collection => @token.language.lemmata, :required => false
     != f.input :morphology_tag, :required => false
     != f.input :empty_token_sort, :required => false
     != f.input :foreign_ids, :hint => 'A comma-separated list of key-value pairs that link the lemma to some external resource.', :label => 'Foreign IDs', :required => false
@@ -22,6 +22,50 @@
       != "<option #{q['animacy'] == 'a' ? 'selected=true' : ''}> a"
       != "<option #{q['animacy'] == 'i' ? 'selected=true' : ''}> i"
       != "<option #{q['animacy'] == 'p' ? 'selected=true' : ''}> p"
+    - q = @token.slash_out_edges_to_hash
+    - if q.length>0
+      - t = 0
+      %input{:type => "hidden", :id => "slashes", :name => "slashes"}
+      %table{:style => "width:90%;margin-left:0;margin-right:0"}
+        %caption{:style => "font-size:13px"} Outgoing slash edges
+        %thead
+          %tr
+            %th.shead{:scope => "col"} Slashee ID
+            %th.shead{:scope => "col"} Relation
+        %tbody
+          - q.each_key do |k|
+            %tr
+              %td.sid
+                != link_to k.to_s, {controller: "tokens", action: "show", id: k}, target: "_blank"
+              %td
+                %select.srel{:id => "sl" + t.to_s}
+                  != "<option #{q[k] == 'adnom' ? 'selected=true' : ''}> adnom"
+                  != "<option #{q[k] == 'adv' ? 'selected=true' : ''}> adv"
+                  != "<option #{q[k] == 'ag' ? 'selected=true' : ''}> ag"
+                  != "<option #{q[k] == 'apos' ? 'selected=true' : ''}> apos"
+                  != "<option #{q[k] == 'arg' ? 'selected=true' : ''}> arg"
+                  != "<option #{q[k] == 'atr' ? 'selected=true' : ''}> atr"
+                  != "<option #{q[k] == 'aux' ? 'selected=true' : ''}> aux"
+                  != "<option #{q[k] == 'comp' ? 'selected=true' : ''}> comp"
+                  != "<option #{q[k] == 'expl' ? 'selected=true' : ''}> expl"
+                  != "<option #{q[k] == 'narg' ? 'selected=true' : ''}> narg"
+                  != "<option #{q[k] == 'nonsub' ? 'selected=true' : ''}> nonsub"
+                  != "<option #{q[k] == 'obj' ? 'selected=true' : ''}> obj"
+                  != "<option #{q[k] == 'obl' ? 'selected=true' : ''}> obl"
+                  != "<option #{q[k] == 'parpred' ? 'selected=true' : ''}> parpred"
+                  != "<option #{q[k] == 'part' ? 'selected=true' : ''}> part"
+                  != "<option #{q[k] == 'per' ? 'selected=true' : ''}> per"
+                  != "<option #{q[k] == 'pid' ? 'selected=true' : ''}> pid"
+                  != "<option #{q[k] == 'pred' ? 'selected=true' : ''}> pred"
+                  != "<option #{q[k] == 'rel' ? 'selected=true' : ''}> rel"
+                  != "<option #{q[k] == 'sub' ? 'selected=true' : ''}> sub"
+                  != "<option #{q[k] == 'voc' ? 'selected=true' : ''}> voc"
+                  != "<option #{q[k] == 'xadv' ? 'selected=true' : ''}> xadv"
+                  != "<option #{q[k] == 'xobj' ? 'selected=true' : ''}> xobj"
+                  != "<option #{q[k] == 'xsub' ? 'selected=true' : ''}> xsub"
+            - t = t + 1
 
   = f.actions do
     != f.submit 'Update'
+
+%script document.getElementsByTagName("form")[1].addEventListener('submit', tokenEditSubmit);
