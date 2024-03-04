@@ -32,8 +32,9 @@ div#palette input + span { -moz-border-radius: 6px; border: 1px solid #CAD8F3; b
 div#palette input:checked + span { border-color: #ccc; background: #9999ff; color: white; }
 div#palette input:disabled + span { border-color: #ccc; background: #ccc; color: white; }
 
-ul.tree, ul.tree ul { list-style-type: none; background: image_url("vline.png") repeat-y; margin: 0; padding: 0; } 
+ul.tree, ul.tree ul { list-style-type: none; background: url("vline.png") repeat-y; margin: 0; padding: 0; } 
 ul.tree ul { margin-left: 10px; } 
-ul.tree li { margin: 0; padding: 0 12px; line-height: 20px; background: image_url("node.png") no-repeat; } 
-ul.tree li:last-child { background: #fff image_url("lastnode.png") no-repeat; }
-ul.tree .selected { background: #ccccff; }
+ul.tree li { margin: 0; padding: 0 12px; line-height: 20px; background: url("node.png") no-repeat; } 
+ul.tree li:last-child { background-color: #fff; background-image: url("lastnode.png"); background-repeat: no-repeat; }
+ul.tree .selected { background-color: #ccccff !important; }
+ul.tree .selected li:last-child { background-color: #ccccff; }
