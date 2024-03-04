@@ -2,6 +2,7 @@
 #
 # Copyright 2009, 2010, 2011, 2012 University of Oslo
 # Copyright 2009, 2010, 2011, 2012 Marius L. Jøhndal
+# New material copyright 2023, 2024 by Morgan Macleod
 #
 # This file is part of the PROIEL web application.
 #
@@ -19,6 +20,7 @@
 # <http://www.gnu.org/licenses/>.
 #
 #++
+require 'io/console'
 
 class User < ActiveRecord::Base
   devise :database_authenticatable, :registerable,
@@ -67,6 +69,17 @@ class User < ActiveRecord::Base
     u = User.new attrs
     u.confirmed_at = Time.now
     u.role = 'administrator'
+	unless attrs.has_key?("password")
+	  p1 = $stdin.getpass("Enter password:\n")
+	  p2 = $stdin.getpass("Confirm password:\n")
+	  if p1 != p2
+	    print "Passwords do not match"
+		u.destroy
+		return nil
+	  else
+	    u.password = p1
+	  end
+	end
     u.save!
   end
 
