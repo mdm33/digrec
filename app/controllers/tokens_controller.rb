@@ -94,6 +94,20 @@ class TokensController < ApplicationController
       value = attribute.semantic_attribute_values.find(semtag)
       @token.semantic_tags.create(:semantic_attribute_value => value)
     end
+	unless params[:slashes].nil?
+	  unless params[:slashes] == ""
+	    slashes = params[:slashes].split(";")
+		@token.slash_out_edges.each do |so|
+		  slashes.each do |sl|
+		    slash = sl.split(",")
+			if slash[0] == so.slashee_id.to_s
+			  so.relation_tag=slash[1]
+			  so.save
+			end
+		  end
+		end
+	  end
+	end
 
     respond_with @token
   end
@@ -192,7 +206,7 @@ class TokensController < ApplicationController
       chars = [""]
       txtin.downcase.each_char do |x|
         val = x.codepoints[0]
-        if chars[k].length > 0 && (chars[k][0] != "*" || txtout.codepoints[0] >= 0x61) && ((val >= 0x61 && val <= 0x7A) || x == "?")
+        if chars[k].length > 0 && (chars[k][0] != "*" || txtout.codepoints[0] >= 0x61) && (x != "/" && x != "\\" && x != "+" && x != "|" && x != "=" && x != "(" && x != ")")
           k = k + 1
           chars.push(x)
 		else
