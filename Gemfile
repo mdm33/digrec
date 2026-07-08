@@ -1,19 +1,23 @@
 source 'https://rubygems.org'
 
-gem 'rails', '3.2.22'
+gem 'rails', '>=8.0'
+gem 'protected_attributes_continued'
 gem 'json'
+gem 'csv'
+gem 'observer'
 gem 'sass-rails'
 
-gem 'proiel', '1.1.1'
+gem 'proiel'
+gem 'rack-utf8_sanitizer'
 
 gem 'formtastic'
 gem 'kaminari'
-gem 'haml', '~> 4.0.4'
-gem 'devise', '~> 2.2.4'
+gem 'haml'
+gem 'devise'
 gem 'devise-encryptable'
-gem 'exception_notification', '~> 3.0.1'
-gem 'audited-activerecord', '~> 3.0'
-gem 'ransack', '~> 0.7.2'
+gem 'exception_notification'
+# gem 'audited-activerecord', '~> 3.0'
+gem 'ransack'
 
 gem 'unicode'
 
@@ -23,24 +27,24 @@ gem 'nori'
 
 gem 'gchartrb', :require => 'google_chart'
 gem 'diff-lcs', :require => 'diff/lcs'
-gem 'alignment'
+# gem 'alignment'
 gem 'differ'
 gem 'iso-codes', :require => 'iso_codes'
 gem 'ruby-sfst', :require => 'sfst'
 gem 'colorize'
 
 group :production, :development do
-  gem 'mysql2', '~> 0.3.20'
+  gem 'mysql2'
   gem 'pg'
 end
 
 gem 'foreman'
 gem 'dotenv'
-gem 'unicorn'
+gem 'webrick'
 
 group :development, :test do
   gem 'rspec-rails'
-  gem 'factory_girl_rails'
+  gem 'factory_bot_rails'
   gem 'sqlite3'
   gem 'simplecov', require: false
   gem 'test-unit'

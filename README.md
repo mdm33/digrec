@@ -11,11 +11,11 @@ It contains new features for working specifically with Greek texts, including:
   - Export of multiple texts to a single file
   - Semantic tagging using the DiGreC semantic tagging schema (view, edit, search, round-trip export and import)
   
-The information-structure functionality, which is not used in the DiGreC treebank, has been removed from the user interface.
+The information-structure functionality, which is not used in the DiGreC treebank, has been removed from the user interface. The cross-linguistic alignment functionality has also been removed.
 
 ## Installing
 
-DiGreC is a Ruby on Rails application. This version uses Ruby 2.3 and Rails 3.2, and works with MySQL 5.6.  For other database systems, it may be necessary to modify the SQL syntax used by Rails and by the application code.
+DiGreC is a Ruby on Rails application. This version uses Ruby 3.3 and Rails 8.1, and works with MySQL.  For other database systems, it may be necessary to modify the SQL syntax used by Rails and by the application code.
 
 The following instructions assume that you have a functional and up-to-date Ruby environment installed, and that you have already configured your database server.
 
@@ -24,14 +24,12 @@ The following instructions assume that you have a functional and up-to-date Ruby
 Make sure that bundler is installed and then install required dependencies:
 
 ```shell
-$ gem install bundler -v 1.9
 $ bundle install
 ```
 
 If you only intend to run the application in production mode, you can cut down the number of dependencies this way:
 
 ```shell
-$ gem install bundler -v 1.9
 $ bundle install --without test development
 ```
 
@@ -60,8 +58,10 @@ Add an administrator account using the Rails console:
 ```shell
 $ bundle exec rails c
 Loading development environment (Rails 3.1.3)
->> User.create_confirmed_administrator! :login => "username", :first_name => "Foo", :last_name => "Bar", :email => "foo@bar", :password => "foo"
+>> User.create_confirmed_administrator! :login => "username", :first_name => "Foo", :last_name => "Bar", :email => "foo@bar"
 ```
+
+You will be prompted to enter a password.
 
 ### Step 4: Generate an environment file
 
@@ -129,15 +129,19 @@ $ bin/rails c
 
 The easiest way to run DiGreC on Windows is using the Windows Subsystem for Linux.  By installing the Linux versions of Ruby and Rails, it should be possible to run DiGreC with little modification.
 
-If the Windows Subsystem for Linux is not available, it may be possible to run DiGreC using native Windows versions of Ruby and Rails.  If you wish to attempt this, please replace `Gemfile` and `Gemfile.lock` with `Gemfile.win` and `Gemfile.lock.win`.  Many of the gems used in this application require native extensions that will need to be compiled for Windows during the installation process.  Some intervention may be needed in order for them to compile correctly; the exact steps involved will vary depending on your development environment, as these can differ quite widely.
+If the Windows Subsystem for Linux is not available, it may be possible to run DiGreC using native Windows versions of Ruby and Rails.  Many of the gems used in this application require native extensions that will need to be compiled for Windows during the installation process.  Some intervention may be needed in order for them to compile correctly; the exact steps involved will vary depending on your development environment, as these can differ quite widely.
 
 ## New in version 1.3.0
 
-This version adds `new`/`create` paths to allow dynamic additions to an existing corpus via a web interface. When a new sentence is added, the option is given to attempt to tag tokens automatically for lemma and morphology. This feature looks only at similarity to existing corpus data and requires a large existing corpus to be effective. The output of automatic tagging should always be manually checked.
+This version adds `new`/`create` paths to allow dynamic additions to an existing corpus via a web interface. When a new sentence is added, the option is given to attempt to tag tokens automatically for lemma and morphology. This feature looks only at similarity to existing corpus data and requires a large existing corpus to be effective. The output of automatic tagging should always be manually checked; if it is not manually checked, validation errors may be raised.
 
 ### Warning
 
 The web interface should not be used to add new data in a production environment. This feature may cause URL references to change unexpectedly and/or invalidate objects held by other users. Note that the path `/sources/new` is not exposed in the user interface.
+
+## New in version 1.4.0
+
+This version has been updated to be compatible with Ruby 3.3, Rails 8.1, and MySQL 8.x. If you need compatibility with older versions, you can still use [version 1.3] (https://github.com/mdm33/digrec/tree/a48962dc5b5b7ebd869988ba5e7e46b909a419b9). Some changes are based on updates by Marius L. Jøhndal to the original PROIEL app, which we gratefully acknowledge. As part of the update, the auditing functionality has been removed; users who need to monitor access may be able to implement auditing directly through their database server.
 
 ## License
 
