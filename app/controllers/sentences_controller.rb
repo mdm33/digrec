@@ -2,7 +2,7 @@
 #
 # Copyright 2009, 2010, 2011, 2012, 2015 University of Oslo
 # Copyright 2009, 2010, 2011, 2012, 2015 Marius L. Jøhndal
-# New material copyright 2023 by Morgan Macleod
+# New material copyright 2023, 2026 by Morgan Macleod
 #
 # This file is part of the PROIEL web application.
 #
@@ -23,15 +23,14 @@
 
 class SentencesController < ApplicationController
   respond_to :html
-  before_filter :is_reviewer?, :only => [:edit, :update, :flag_as_reviewed, :flag_as_not_reviewed]
+  before_action :is_reviewer?, :only => [:edit, :update, :flag_as_reviewed, :flag_as_not_reviewed]
 
   rescue_from ActiveRecord::RecordNotFound, :with => :record_not_found
 
   def show
     @sentence = Sentence.includes(:source_division => [:source],
-                                  :tokens => [:lemma, :audits, :notes],
-                                  :notes => [],
-                                  :audits => [:auditable]).find(params[:id])
+                                  :tokens => [:lemma, :notes],
+                                  :notes => []).find(params[:id])
     @source_division = @sentence.source_division
     @source = @source_division.try(:source)
 
@@ -39,7 +38,7 @@ class SentencesController < ApplicationController
     @semantic_tags = @sentence.semantic_tags
 
     @notes = @sentence.notes
-    @audits = @sentence.audits
+    #@audits = @sentence.audits
 
     respond_with @sentence
   end

@@ -3,7 +3,7 @@
 #
 # Copyright 2009, 2010, 2011, 2012, 2013 University of Oslo
 # Copyright 2009, 2010, 2011, 2012, 2013 Marius L. Jøhndal
-# New material copyright 2019, 2020, 2023 by Morgan Macleod
+# New material copyright 2019, 2020, 2023, 2026 by Morgan Macleod
 #
 # This file is part of the PROIEL web application.
 #
@@ -24,7 +24,7 @@
 
 class TokensController < ApplicationController
   respond_to :html
-  before_filter :is_administrator?, :only => [:edit, :update]
+  before_action :is_administrator?, :only => [:edit, :update]
 
   rescue_from ActiveRecord::RecordNotFound, :with => :record_not_found
 
@@ -46,7 +46,7 @@ class TokensController < ApplicationController
       @incoming_semantic_relations = @token.incoming_semantic_relations
 
       @notes = @token.notes
-      @audits = @token.audits
+      #@audits = @token.audits
 
       respond_with @token
     end
@@ -128,7 +128,7 @@ class TokensController < ApplicationController
         params[:q][:lemma_lemma_wildcard_matches] = TokensController.beta_decode(params[:q][:lemma_lemma_wildcard_matches])
       end
     end
-    @search = Token.search(params[:q])
+    @search = Token.ransack(params[:q])
     # Location sorts are actually multi-sorts. Inspecting @search.sorts may
     # seem like the sensible solution to this, but this is actually an array of
     # non-inspectable objects. We'll instead peek at params[:q][:s] and

@@ -2,7 +2,7 @@
 #
 # Copyright 2009, 2010, 2011, 2012, 2013 University of Oslo
 # Copyright 2009, 2010, 2011, 2012, 2013 Marius L. Jøhndal
-# New material copyright 2020 by Morgan Macleod
+# New material copyright 2020, 2026 by Morgan Macleod
 #
 # This file is part of the PROIEL web application.
 #
@@ -23,7 +23,7 @@
 
 class LemmataController < ApplicationController
   respond_to :html
-  before_filter :is_reviewer?, :only => [:edit, :update, :merge]
+  before_action :is_reviewer?, :only => [:edit, :update, :merge]
 
   rescue_from ActiveRecord::RecordNotFound, :with => :record_not_found
 
@@ -81,7 +81,7 @@ class LemmataController < ApplicationController
         params[:q][:lemma_wildcard_matches] = TokensController.beta_decode(params[:q][:lemma_wildcard_matches])
       end
     end
-    @search = Lemma.order(:lemma).search(params[:q])
+    @search = Lemma.order(:lemma).ransack(params[:q])
     @lemmata = @search.result.page(current_page)
 
     respond_with @dictionary

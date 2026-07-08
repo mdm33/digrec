@@ -4,7 +4,7 @@
 # Copyright 2007, 2008, 2009, 2010, 2011, 2012, 2013 University of Oslo
 # Copyright 2007, 2008, 2009, 2010, 2011, 2012, 2013 Marius L. Jøhndal
 # Copyright 2011 Dag Haug
-# New material copyright 2023 by Morgan Macleod
+# New material copyright 2023, 2026 by Morgan Macleod
 #
 # This file is part of the PROIEL web application.
 #
@@ -114,7 +114,7 @@ class SourceDivision < ActiveRecord::Base
   def semantic_relation_heads(srt)
     tokens.select do |t|
      t.outgoing_semantic_relations.any? { |osa| osa.semantic_relation_type == srt} or t.incoming_semantic_relations.any? { |isa| isa.semantic_relation_type == srt }
-    end.uniq
+    end.distinct
   end
 
   def semantic_relation_dot(srt)
@@ -176,7 +176,7 @@ class SourceDivision < ActiveRecord::Base
 
   # Returns all contrast groups defined in the source division.
   def contrast_groups
-    tokens.where('contrast_group IS NOT NULL').uniq.pluck(:contrast_group)
+    tokens.where('contrast_group IS NOT NULL').distinct.pluck(:contrast_group)
   end
 
   # Delete contrast group from source division.
@@ -185,5 +185,13 @@ class SourceDivision < ActiveRecord::Base
     raise 'Invalid contrast number' unless contrast_number > 0
 
     tokens.where('contrast_group LIKE ?', "#{contrast_number}%").update_all :contrast_group => nil
+  end
+
+  def self.ransackable_attributes(auth_object = nil)
+    column_names + _ransackers.keys
+  end
+
+  def self.ransackable_associations(auth_object = nil)
+    reflect_on_all_associations.map { |a| a.name.to_s }
   end
 end

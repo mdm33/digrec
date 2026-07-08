@@ -2,6 +2,7 @@
 #
 # Copyright 2007, 2008, 2009, 2010, 2011, 2012, 2013 University of Oslo
 # Copyright 2007, 2008, 2009, 2010, 2011, 2012, 2013 Marius L. Jøhndal
+# Additional material copyright 2026 Morgan Macleod
 #
 # This file is part of the PROIEL web application.
 #
@@ -88,7 +89,7 @@ class LanguageTag < TagObject
 
       completions = Lemma.possible_completions(language_tag, completion_candidates)
 
-      [results.sort.uniq, completions]
+      [results.sort.distinct, completions]
     else
       [[query], []]
     end
@@ -100,5 +101,13 @@ class LanguageTag < TagObject
 
   def lemmata
     Lemma.where(:language_tag => tag).order('lemma ASC')
+  end
+
+  def self.ransackable_attributes(auth_object = nil)
+    column_names + _ransackers.keys
+  end
+
+  def self.ransackable_associations(auth_object = nil)
+    reflect_on_all_associations.map { |a| a.name.to_s }
   end
 end

@@ -1,16 +1,17 @@
 # Controls modification of morphtags on a per sentence basis.
 class MorphtagsController < ApplicationController
-  before_filter :is_annotator?, :only => [:edit, :update]
+  before_action :is_annotator?, :only => [:edit, :update]
 
   # Returns potential renderings of transliterated lemmata.
   def auto_complete_for_morphtags_lemma
-    if params[:morphtags][:lemma].empty?
+    # if params[:morphtags][:lemma].empty?
+    if true
       # Prevent completion functions from looking up all possible lemmata
       @transliterations = []
       @completions = []
     else
       @transliterations, c = LanguageTag.find_lemma_completions(params[:morphtags][:language], params[:morphtags][:lemma])
-      @completions = c.map(&:export_form).sort.uniq
+      @completions = c.map(&:export_form).sort.distinct
     end
 
     render :partial => "transliterations/input"

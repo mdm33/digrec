@@ -3,7 +3,7 @@
 #
 # Copyright 2007, 2008, 2009, 2010, 2011, 2012, 2013 University of Oslo
 # Copyright 2007, 2008, 2009, 2010, 2011, 2012, 2013 Marius L. Jøhndal
-# New material copyright 2023 Morgan Macleod
+# New material copyright 2023, 2026 Morgan Macleod
 #
 # This file is part of the PROIEL web application.
 #
@@ -611,6 +611,14 @@ class Sentence < ActiveRecord::Base
   # distance from the root to a node in the graph in number of edges.
   def max_depth
     tokens.map(&:depth).max
+  end
+
+  def self.ransackable_attributes(auth_object = nil)
+    column_names + _ransackers.keys
+  end
+
+  def self.ransackable_associations(auth_object = nil)
+    reflect_on_all_associations.map { |a| a.name.to_s }
   end
 
   presentation_on 'source_division'

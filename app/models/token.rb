@@ -3,7 +3,7 @@
 #
 # Copyright 2007, 2008, 2009, 2010, 2011, 2012, 2013, 2014 University of Oslo
 # Copyright 2007, 2008, 2009, 2010, 2011, 2012, 2013, 2014 Marius L. Jøhndal
-# New material copyright 2024 by Morgan Macleod
+# New material copyright 2024, 2026 by Morgan Macleod
 #
 # This file is part of the PROIEL web application.
 #
@@ -402,7 +402,7 @@ class Token < ActiveRecord::Base
   end
 
   def self.presentation_form
-    pluck("CONCAT(IFNULL(presentation_before, ''), form, IFNULL(presentation_after, ''))")
+    pluck(Arel.sql("CONCAT(IFNULL(presentation_before, ''), form, IFNULL(presentation_after, ''))"))
   end
 
   def sentence_context_to_s
@@ -506,9 +506,11 @@ class Token < ActiveRecord::Base
   # The function returns the new token.
   def insert_new_token!(attributes = {})
     new_token = nil
-
+    puts "DBG!!!"
+    puts parent
+    puts parent.id
     Token.transaction do
-      parent.tokens.find(:all, :conditions => ["token_number > ?", token_number]).sort do |x, y|
+      Token.all.where("sentence_id = ? AND token_number > ?", parent.id, token_number).sort do |x, y|
         y.token_number <=> x.token_number
       end.each do |s|
         s.token_number += 1
@@ -690,5 +692,13 @@ class Token < ActiveRecord::Base
   # "PRO-RELATION" if the token is a PRO token.
   def form_or_pro
     empty_token_sort == 'P' ? "PRO-#{relation.tag.upcase}" : form
+  end
+
+  def self.ransackable_attributes(auth_object = nil)
+    column_names + _ransackers.keys
+  end
+
+  def self.ransackable_associations(auth_object = nil)
+    reflect_on_all_associations.map { |a| a.name.to_s }
   end
 end

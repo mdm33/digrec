@@ -3,6 +3,7 @@
 #
 # Copyright 2013 University of Oslo
 # Copyright 2013 Marius L. Jøhndal
+# Additional material copyright 2026 Morgan Macleod
 #
 # This file is part of the PROIEL web application.
 #
@@ -26,5 +27,13 @@ class InformationStatusTag < TagObject
 
   def to_label
     summary
+  end
+
+  def self.ransackable_attributes(auth_object = nil)
+    column_names + _ransackers.keys
+  end
+
+  def self.ransackable_associations(auth_object = nil)
+    reflect_on_all_associations.map { |a| a.name.to_s }
   end
 end

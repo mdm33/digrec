@@ -3,6 +3,7 @@
 #
 # Copyright 2007, 2008, 2009, 2010, 2011, 2012, 2013 University of Oslo
 # Copyright 2007, 2008, 2009, 2010, 2011, 2012, 2013 Marius L. Jøhndal
+# Additional material copyright 2026 Morgan Macleod
 #
 # This file is part of the PROIEL web application.
 #
@@ -33,5 +34,13 @@ class SemanticTag < ActiveRecord::Base
   # Returns the semantic attribute for this tag.
   def semantic_attribute
     semantic_attribute_value.semantic_attribute
+  end
+
+  def self.ransackable_attributes(auth_object = nil)
+    column_names + _ransackers.keys
+  end
+
+  def self.ransackable_associations(auth_object = nil)
+    reflect_on_all_associations.map { |a| a.name.to_s }
   end
 end

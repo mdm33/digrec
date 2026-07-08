@@ -2,6 +2,7 @@
 #
 # Copyright 2007, 2008, 2009, 2010, 2011, 2012, 2013 University of Oslo
 # Copyright 2007, 2008, 2009, 2010, 2011, 2012, 2013, 2014 Marius L. Jøhndal
+# Additional material copyright 2026 Morgan Macleod
 #
 # This file is part of the PROIEL web application.
 #
@@ -40,5 +41,13 @@ class Inflection < ActiveRecord::Base
   # Returns the morphological features. These will never be nil.
   def morph_features
     MorphFeatures.new([lemma, part_of_speech_tag, language.tag].join(','), morphology.tag)
+  end
+
+  def self.ransackable_attributes(auth_object = nil)
+    column_names + _ransackers.keys
+  end
+
+  def self.ransackable_associations(auth_object = nil)
+    reflect_on_all_associations.map { |a| a.name.to_s }
   end
 end

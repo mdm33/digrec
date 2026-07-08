@@ -22,7 +22,7 @@
 
 class SemanticTagsController < ApplicationController
   respond_to :html
-  before_filter :is_reviewer?
+  before_action :is_reviewer?
 
   def show
     @semantic_tag = SemanticTag.find(params[:id])
@@ -31,7 +31,7 @@ class SemanticTagsController < ApplicationController
   end
 
   def index
-    @search = SemanticTag.search(params[:q])
+    @search = SemanticTag.ransack(params[:q])
     @semantic_tags = @search.result.includes(:semantic_attribute_value).page(current_page)
 
     respond_with @semantic_tags

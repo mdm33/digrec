@@ -5,7 +5,7 @@ module AnnotationsHelper
     if sentence.is_annotated?
       t = 'Annotated'
       t += " by #{link_to_user(sentence.annotator)}" if sentence.annotated_by
-      t += " on #{sentence.annotated_at.to_s(:long)}" if sentence.annotated_at
+      t += " on #{sentence.annotated_at.to_s()}" if sentence.annotated_at
     else
       'Not annotated.'
     end
@@ -17,7 +17,7 @@ module AnnotationsHelper
     if sentence.is_reviewed?
       t = 'Reviewed'
       t += " by #{link_to_user(sentence.reviewer)}" if sentence.reviewed_by
-      t += " on #{sentence.reviewed_at.to_s(:long)}" if sentence.reviewed_at
+      t += " on #{sentence.reviewed_at.to_s()}" if sentence.reviewed_at
     else
       'Not reviewed.'
     end

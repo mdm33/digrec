@@ -1,13 +1,13 @@
 class InfoStatusesController < ApplicationController
-  before_filter :find_sentence
-  before_filter :is_annotator?, :only => [:edit, :update]
+  before_action :find_sentence
+  before_action :is_annotator?, :only => [:edit, :update]
 
   # GET /sentences/1/info_status/edit
   def edit
     @source_division = @sentence.source_division
     @source = @source_division.source
 
-    s = @source_division.contrast_groups.map(&:to_i).sort.uniq.map do |contrast|
+    s = @source_division.contrast_groups.map(&:to_i).sort.distinct.map do |contrast|
       %Q(<option value="#{contrast}">#{contrast}</option>)
     end.join
     @contrast_options = ('<option selected="selected"></option>' + s).html_safe

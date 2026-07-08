@@ -24,8 +24,8 @@
 class AuditsController < ApplicationController
   append_view_path AuditsResolver.new
   respond_to :html, :xml
-  before_filter :is_annotator?
-  before_filter :is_administrator?, :only => [:destroy]
+  before_action :is_annotator?
+  before_action :is_administrator?, :only => [:destroy]
 
   def index
     if params[:sentence_id]

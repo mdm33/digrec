@@ -3,6 +3,7 @@
 #
 # Copyright 2007, 2008, 2009, 2010, 2011, 2012, 2013, 2014 University of Oslo
 # Copyright 2007, 2008, 2009, 2010, 2011, 2012, 2013, 2014 Marius L. Jøhndal
+# Additional material copyright 2026 Morgan Macleod
 #
 # This file is part of the PROIEL web application.
 #
@@ -38,7 +39,7 @@ class Lemma < ActiveRecord::Base
 
   validates_presence_of :lemma
   validates_unicode_normalization_of :lemma, :form => UNICODE_NORMALIZATION_FORM
-  validates_uniqueness_of :lemma, :scope => [:language_tag, :part_of_speech_tag, :variant]
+  validates_uniqueness_of :lemma, :scope => [:language_tag, :part_of_speech_tag, :variant], case_sensitive: true
   validates_numericality_of :variant, allow_nil: true
 
   # Returns possible completions of a lemma given a language tag and one or
@@ -138,16 +139,24 @@ class Lemma < ActiveRecord::Base
   # Returns an array of all parts of speech represented among lemmata. The
   # parts of speech are sorted using +to_label+ as sort key.
   def self.represented_parts_of_speech
-    Lemma.uniq.select(:part_of_speech_tag).map(&:part_of_speech).sort_by(&:to_label)
+    Lemma.distinct.select(:part_of_speech_tag).map(&:part_of_speech).sort_by(&:to_label)
   end
 
   # Returns an array of all languages represented among lemmata. The languages
   # are sorted using +to_label+ as sort key.
   def self.represented_languages
-    Lemma.uniq.select(:language_tag).map(&:language).sort_by(&:to_label)
+    Lemma.distinct.select(:language_tag).map(&:language).sort_by(&:to_label)
   end
 
   def language_name
     LanguageTag.new(language_tag).try(:name)
+  end
+
+  def self.ransackable_attributes(auth_object = nil)
+    column_names + _ransackers.keys
+  end
+
+  def self.ransackable_associations(auth_object = nil)
+    reflect_on_all_associations.map { |a| a.name.to_s }
   end
 end

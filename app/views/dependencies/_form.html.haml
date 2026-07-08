@@ -6,15 +6,15 @@
   != hidden_field_tag 'input-relations', @sentence.syntactic_annotation_with_tokens(params[:output])[:relations].map(&:tag).to_json
 
   %div{:class => "actions"}
-    != button_to_function "Delete subtree", "", :id => 'button-delete', :disabled => true
-    != button_to_function "Cut subtree", "", :id => 'button-cut', :disabled => true
-    != button_to_function "Paste subtree", "", :id => 'button-paste', :disabled => true
-    != button_to_function "Clear", "", :id => "button-clear"
-    != button_to_function "Reset", "", :id => "button-reset"
-    != button_to_function "Add asyndetic conjunction", "", :id => "button-insert-empty-conjunction-node"
-    != button_to_function "Add empty verbal node", "", :id => "button-insert-empty-verbal-node"
-    != button_to_function "Add slash", "", :id => 'button-add-slash', :disabled => true
-    != button_to_function "Remove slashes", "", :id => 'button-remove-slashes', :disabled => true
+    != tag(:input, {}.merge(:type => 'button', :value => "Delete subtree", :id => 'button-delete', :disabled => true))
+    != tag(:input, {}.merge(:type => 'button', :value => "Cut subtree", :id => 'button-cut', :disabled => true))
+    != tag(:input, {}.merge(:type => 'button', :value => "Paste subtree", :id => 'button-paste', :disabled => true))
+    != tag(:input, {}.merge(:type => 'button', :value => "Clear", :id => "button-clear"))
+    != tag(:input, {}.merge(:type => 'button', :value => "Reset", :id => "button-reset"))
+    != tag(:input, {}.merge(:type => 'button', :value => "Add asyndetic conjunction", :id => "button-insert-empty-conjunction-node"))
+    != tag(:input, {}.merge(:type => 'button', :value => "Add empty verbal node", :id => "button-insert-empty-verbal-node"))
+    != tag(:input, {}.merge(:type => 'button', :value => "Add slash", :id => 'button-add-slash', :disabled => true))
+    != tag(:input, {}.merge(:type => 'button', :value => "Remove slashes", :id => 'button-remove-slashes', :disabled => true))
 
   %div{:class => "actions"}
     %label Build direction

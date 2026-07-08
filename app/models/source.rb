@@ -3,7 +3,7 @@
 #
 # Copyright 2007, 2008, 2009, 2010, 2011, 2012, 2013, 2014 University of Oslo
 # Copyright 2007, 2008, 2009, 2010, 2011, 2012, 2013, 2014 Marius L. Jøhndal
-# New material copyright 2019, 2020 by Morgan Macleod
+# New material copyright 2019, 2020, 2026 by Morgan Macleod
 #
 # This file is part of the PROIEL web application.
 #
@@ -45,6 +45,14 @@ class Source < ActiveRecord::Base
 
   store :additional_metadata, accessors: Proiel::Metadata.fields
 
+  def self.ransackable_attributes(auth_object = nil)
+    column_names + _ransackers.keys
+  end
+
+  def self.ransackable_associations(auth_object = nil)
+    reflect_on_all_associations.map { |a| a.name.to_s }
+  end
+
   # Returns a citation for the source.
   def citation
     citation_part
@@ -58,12 +66,12 @@ class Source < ActiveRecord::Base
 
   # Returns an array of all languages represented in sources.
   def self.represented_languages
-    Source.uniq.pluck(:language_tag).map { |l| LanguageTag.new(l) }.sort_by(&:to_label)
+    Source.distinct.pluck(:language_tag).map { |l| LanguageTag.new(l) }.sort_by(&:to_label)
   end
 
   # Returns an array of all dates represented in sources.
   def self.represented_dates
-    Source.where("Instr(additional_metadata,'printed_text_date: ') > 0").uniq.pluck("Mid(additional_metadata,Instr(additional_metadata,'printed_text_date: ')+19)").map { |l| l.strip! }.sort!
+    Source.where("Instr(additional_metadata,'printed_text_date: ') > 0").distinct.pluck(Arel.sql("Mid(additional_metadata,Instr(additional_metadata,'printed_text_date: ')+19)")).map { |l| l.strip! }.sort!
   end
 
   def to_label

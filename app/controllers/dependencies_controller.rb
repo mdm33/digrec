@@ -1,5 +1,5 @@
 class DependenciesController < ApplicationController
-  before_filter :is_annotator?, :only => [:edit, :update]
+  before_action :is_annotator?, :only => [:edit, :update]
 
   def show
     @sentence = Sentence.includes(:tokens => [:lemma]).find(params[:sentence_id])

@@ -2,7 +2,7 @@
 #
 # Copyright 2007-2012 University of Oslo
 # Copyright 2007-2016 Marius L. Jøhndal
-# New material copyright 2023 by Morgan Macleod
+# New material copyright 2023, 2026 by Morgan Macleod
 #
 # This file is part of the PROIEL web application.
 #
@@ -23,7 +23,7 @@
 
 class SourcesController < ApplicationController
   respond_to :html, :xml
-  before_filter :is_administrator?, :only => [:create, :new, :edit, :update]
+  before_action :is_administrator?, :only => [:create, :new, :edit, :update]
 
   rescue_from ActiveRecord::RecordNotFound, :with => :record_not_found
 

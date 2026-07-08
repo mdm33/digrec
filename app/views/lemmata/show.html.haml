@@ -33,5 +33,5 @@
   %tbody
     != render :partial => 'annotations/annotation', :collection => @tokens
 
-- layer_if  (is_reviewer? and !@lemma.audits.empty?), "revisions" do
-  != audits_summary @lemma.audits
+/- layer_if  (is_reviewer? and !@lemma.audits.empty?), "revisions" do
+/  != audits_summary @lemma.audits
