@@ -79,7 +79,8 @@ module AutoCompleteMacrosHelper
       js_options[v] = options[k] if options[k]
     end
 
-    function << (', ' + options_for_javascript(js_options) + ')')
+    # function << (', ' + options_for_javascript(js_options) + ')')
+    function << ')'
 
     javascript_tag(function)
   end
@@ -100,7 +101,7 @@ module AutoCompleteMacrosHelper
   def auto_complete_result(entries, field, phrase = nil)
     return unless entries
     items = entries.map { |entry| content_tag("li", phrase ? highlight(entry[field], phrase) : h(entry[field])) }
-    content_tag("ul", items.uniq)
+    content_tag("ul", items.distinct)
   end
   
   # Wrapper for text_field with added AJAX autocompletion functionality.
@@ -117,7 +118,7 @@ module AutoCompleteMacrosHelper
 
   private
     def auto_complete_stylesheet
-      content_tag('style', <<-EOT, :type => Mime::CSS)
+      content_tag('style', <<-EOT, :type => 'text/css')
         div.auto_complete {
           width: 350px;
           background: #fff;

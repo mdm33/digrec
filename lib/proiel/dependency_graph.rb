@@ -228,7 +228,7 @@ module Proiel
     # Returns +true+ if all slashes from this node and its dependents
     # point to any of the same set of nodes.
     def all_slashes_contained?
-      self.subgraph.collect(&:slashes).flatten.uniq.reject { |s| self.dominates?(s) }.empty?
+      self.subgraph.collect(&:slashes).flatten.distinct.reject { |s| self.dominates?(s) }.empty?
     end
 
     # Returns the interpretation of a slash -- existing or potential --
@@ -497,7 +497,7 @@ module Proiel
       unless failures.empty?
         #FIXME
         @valid = false
-        @msg_handler.call(failures.uniq.collect(&:identifier), msg)
+        @msg_handler.call(failures.distinct.collect(&:identifier), msg)
       end
     end
 

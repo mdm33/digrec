@@ -72,14 +72,14 @@ class MassAuditAssignment < MassAssignment
   # Removes all entries that pertain to changes to a specific attribute of a particular model. The
   # operation is transactional.
   def remove_attribute!(model, attribute)
-    Audit.transaction do
-      chunked_each do |change|
-        if change.auditable_type == model and change.action != 'destroy' and change.changes[attribute]
-          puts "Removing attribute #{model}.#{attribute} from audit #{change.id}"
-          change.changes.delete(attribute)
-          change.save!
-        end
-      end
-    end
+    #Audit.transaction do
+    #  chunked_each do |change|
+    #    if change.auditable_type == model and change.action != 'destroy' and change.changes[attribute]
+    #      puts "Removing attribute #{model}.#{attribute} from audit #{change.id}"
+    #      change.changes.delete(attribute)
+    #      change.save!
+    #    end
+    #  end
+    #end
   end
 end

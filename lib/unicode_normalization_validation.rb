@@ -16,15 +16,15 @@ module ActiveRecord
       # * <tt>:message</tt> - Specifies a custom error message (default is: "is not on Unicode Normalization form %s").
       def validates_unicode_normalization_of(*attr_names)
         configuration = {
-          :form      => :kc,
+          :form      => :nfkc,
           :message   => 'is not on Unicode Normalization form %s',
         }
         configuration.update(attr_names.extract_options!)
 
-        raise(ArgumentError, "Invalid normalization form") unless [:c, :kc, :d, :kd].include?(configuration[:form])
+        raise(ArgumentError, "Invalid normalization form") unless [:nfc, :nfkc, :nfd, :nfkd].include?(configuration[:form])
 
         validates_each(attr_names, configuration) do |record, attr_name, value|
-          record.errors.add(attr_name, configuration[:message] % configuration[:form].to_s.upcase) unless value.nil? or value.mb_chars == value.mb_chars.normalize(configuration[:form])
+          record.errors.add(attr_name, configuration[:message] % configuration[:form].to_s.upcase) unless value.nil? or value == value.unicode_normalize(configuration[:form])
         end
       end
     end
