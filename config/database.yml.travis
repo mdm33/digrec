@@ -3,6 +3,9 @@ sqlite: &sqlite
 
 mysql: &mysql
   adapter: mysql2
+  encoding: utf8
+  init_command: "SET @@SESSION.sql_mode = '';"
+  reconnect: true
   username: root
   password:
 

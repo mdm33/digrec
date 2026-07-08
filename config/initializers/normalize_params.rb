@@ -5,7 +5,7 @@ def normalize_unicode_params!(params, *fields)
         if params[field] == ''
           params[field] = nil
         elsif params[field].is_a?(String)
-          params[field] = params[field].mb_chars.normalize(UNICODE_NORMALIZATION_FORM)
+          params[field] = params[field].unicode_normalize(UNICODE_NORMALIZATION_FORM)
         end
       end
     end

@@ -2,13 +2,13 @@ Proiel::Application.routes.draw do
   get "help/index"
 
   devise_for :users
-  resources :users, :only => [:index, :show]
+  resources :users, :except => [:create, :update, :destroy, :new, :edit]
 
   resource :profile, :only => [:edit, :update]
 
-  resources :audits, :only => [:index, :destroy]
+  # resources :audits, :only => [:index, :destroy]
 
-  resources :sources, :only => [:index, :show, :new, :create, :edit, :update]
+  resources :sources, :except => [:destroy]
 
   resources :source_divisions, :only => [:show, :new, :create, :edit, :update] do
     resource :discourse
@@ -16,20 +16,20 @@ Proiel::Application.routes.draw do
 
   resources :semantic_relations, :only => [:show, :edit, :update]
 
-  resources :alignments, :only => [:show, :edit] do
-    member do
-      post :commit
-      post :uncommit
-    end
-  end
+  #resources :alignments, :only => [:show, :edit] do
+  #  member do
+  #    post :commit
+  #    post :uncommit
+  #  end
+  #end
 
-  resources :lemmata, :only => [:index, :show, :edit, :update] do
+  resources :lemmata, :except => [:create, :destroy, :new] do
     member do
       post :merge
     end
   end
 
-  resources :tokens, :only => [:index, :show, :edit, :update] do
+  resources :tokens, :except => [:create, :destroy, :new] do
     member do
       get :dependency_alignment_group
     end
@@ -69,9 +69,9 @@ Proiel::Application.routes.draw do
 
   resources :notes, :only => [:show, :edit, :update, :destroy]
 
-  resources :semantic_tags, :only => [:index, :show]
+  resources :semantic_tags, :except => [:create, :update, :destroy, :new, :edit]
 
-  resource :help, :only => [:index, :ack, :ss] do
+  resource :help, :except => [:show, :create, :update, :destroy, :new, :edit] do
     member do
       get :ack, controller: 'help'
       get :ss, controller: 'help'
@@ -79,13 +79,13 @@ Proiel::Application.routes.draw do
   end
 
   # Wizard
-  match '/wizard/:action', :to => 'wizard#:action'
-  match '/wizard',         :to => 'wizard#index'
+  # match '/wizard/:action', :to => 'wizard#:action'
+  # match '/wizard',         :to => 'wizard#index'
 
   # Quick search and search suggestions
-  match '/quick_search', :to => 'tokens#quick_search'
-  match '/quick_search.:format', :to => 'tokens#quick_search'
-  match '/opensearch.:format', :to => 'tokens#opensearch'
+  get '/quick_search', :to => 'tokens#quick_search'
+  get '/quick_search.:format', :to => 'tokens#quick_search'
+  get '/opensearch.:format', :to => 'tokens#opensearch'
 
   # Default page
   root :to => 'help#index'

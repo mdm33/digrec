@@ -1,6 +1,6 @@
 require 'google_chart'
 require 'lib_files'
-require 'alignment/alignment_support'
+# require 'alignment/alignment_support'
 require 'transliterations'
 require 'morph_features'
 require 'morphtag_constraints'

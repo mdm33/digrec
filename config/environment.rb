@@ -5,7 +5,7 @@ require File.expand_path('../application', __FILE__)
 # override these settings in config/environments/*.
 Proiel::Application.configure do
   # If true, will log changes to annotation objects in the changelog.
-  config.auditing = true
+  config.auditing = false
 
   # The location for tagset files.
   config.tagset_file_path = Rails.root.join('config', 'tagsets')
@@ -29,7 +29,7 @@ Proiel::Application.configure do
 
   config.action_mailer.sendmail_settings = {
     location:  '/usr/sbin/sendmail',
-    arguments: '-i'
+    arguments: '-i -v -pSMTP'
   }
 end
 

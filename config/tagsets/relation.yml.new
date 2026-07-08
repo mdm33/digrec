@@ -1,0 +1,16 @@
+bar:
+  primary: true
+  secondary: true
+  summary: bar
+comp:
+  primary: true
+  secondary: true
+  summary: complement
+head:
+  primary: true
+  secondary: true
+  summary: head
+spec:
+  primary: true
+  secondary: true
+  summary: specifier
