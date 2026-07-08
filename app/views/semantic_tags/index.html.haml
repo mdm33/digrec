@@ -2,7 +2,7 @@
   != f.input :semantic_attribute_value_tag_cont, label: 'Semantic attribute value'
   != f.submit "Search"
 
-!= paginate @semantic_tags, params: params
+!= paginate @semantic_tags, params: request.parameters
 
 %table.ui.table
   %thead

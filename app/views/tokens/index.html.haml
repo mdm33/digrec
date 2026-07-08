@@ -3,9 +3,9 @@
     != breadcrumbs 'Search'
   %p
     - unless @tokens.empty? or @search.result.count > 5000
-      != link_to 'Download results as CSV', params.merge(:format => :csv)
+      != link_to 'Download results as CSV', request.parameters.merge(:format => :csv)
       = ' '
-      != link_to 'Download results as text file', params.merge(:format => :txt)
+      != link_to 'Download results as text file', request.parameters.merge(:format => :txt)
 
 = search_form_for @search, :builder => Formtastic::FormBuilder, :class => 'formtastic wide' do |f|
   = f.inputs do
@@ -13,8 +13,8 @@
       - if Source.represented_languages.count > 1
         != f.input :sentence_source_division_source_language_tag_eq, :label => 'Language', :collection => Source.represented_languages, :required => false
       - if Source.all.count > 1
-        != f.input :sentence_source_division_source_author_eq, :label => 'Author', :collection => Source.uniq.pluck(:author).map { |l| [l,l] }.sort, :required => false
-        != f.input :sentence_source_division_source_title_eq, :label => 'Source', :collection => Source.uniq.pluck(:title).map { |l| [l,l] }.sort, :required => false
+        != f.input :sentence_source_division_source_author_eq, :label => 'Author', :collection => Source.distinct.pluck(:author).map { |l| [l,l] }.sort, :required => false
+        != f.input :sentence_source_division_source_title_eq, :label => 'Source', :collection => Source.distinct.pluck(:title).map { |l| [l,l] }.sort, :required => false
       %label{:for => "animacy"} Animacy
       %select{:id => "animacy", :name => "animacy"}
         %option
@@ -23,12 +23,12 @@
         != "<option #{params['animacy'] == 'p' ? 'selected=true' : ''}> p"
       != f.input :sentence_source_division_source_additional_metadata_cont_any, :label => 'Date', :collection => Source.represented_dates, :required => false, :multiple => true
     ._25
-      != f.input :form_wildcard_matches, :label => 'Token form', :required => false, :hint => '* matches any string (Greek only); ? matches any character (Greek/<a href="http://stephanus.tlg.uci.edu/encoding/quickbeta.pdf" target="_blank" style="padding-right:0pt;background-image:none">BetaCode</a>)'.html_safe
+      != f.input :form_wildcard_matches, :label => 'Token form', :required => false, :hint => '* matches any string (Greek only); ? matches any character (Greek/<a href="https://stephanus.tlg.uci.edu/encoding/quickbeta.pdf" target="_blank" style="padding-right:0pt;background-image:none">BetaCode</a>)'.html_safe
       %div
-        ._l67
-          != f.input :lemma_lemma_wildcard_matches, :label => 'Lemma form', :required => false
-        ._r33
-          != f.input :lemma_variant_eq, :label => 'Variant', :required => false
+        /._l67
+        != f.input :lemma_lemma_wildcard_matches, :label => 'Lemma form', :required => false
+        /._r33
+        /  != f.input :lemma_variant_eq, :label => 'Variant', :required => false
       != f.input :lemma_part_of_speech_tag_eq, :label => 'Part of speech', :collection => Lemma.represented_parts_of_speech, :required => false
       != f.input :relation_tag_eq, :label => 'Relation', collection: RelationTag.all.map { |t| [t.to_label, t.tag] }, :required => false
       /!= f.input :information_status_tag_eq, :label => 'Information status', collection: InformationStatusTag.all.map { |t| [t.to_label, t.tag] }, :required => false
@@ -38,7 +38,7 @@
           != f.input "morphology_tag_char#{MorphFeatures::MORPHOLOGY_POSITIONAL_TAG_SEQUENCE.index(field)}_matches", label: field.to_s.capitalize, collection: MorphFeatures::MORPHOLOGY_SUMMARIES[field].map { |x, y| [y, x] }, required: false
     ._25
       - MorphFeatures::MORPHOLOGY_PRESENTATION_SEQUENCE.each_with_index do |field, i|
-        - if i >= 5
+        - if i >= 5 and i < 9
           != f.input "morphology_tag_char#{MorphFeatures::MORPHOLOGY_POSITIONAL_TAG_SEQUENCE.index(field)}_matches", label: field.to_s.capitalize, collection: MorphFeatures::MORPHOLOGY_SUMMARIES[field].map { |x, y| [y, x] }, required: false
 
   = f.actions do
@@ -49,7 +49,7 @@
     != @search.result.count
     results found. Please narrow your query to 5000 results.
   - else
-    != paginate @tokens, :params => params
+    != paginate @tokens, :params => request.parameters
     .pagination-totals
       != page_entries_info @tokens, :entry_name => 'matches'
 
