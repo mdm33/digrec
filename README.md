@@ -141,7 +141,7 @@ The web interface should not be used to add new data in a production environment
 
 ## New in version 1.4.0
 
-This version has been updated to be compatible with Ruby 3.3, Rails 8.1, and MySQL 8.x. If you need compatibility with older versions, you can still use [version 1.3] (https://github.com/mdm33/digrec/tree/a48962dc5b5b7ebd869988ba5e7e46b909a419b9). Some changes are based on updates by Marius L. Jøhndal to the original PROIEL app, which we gratefully acknowledge. As part of the update, the auditing functionality has been removed; users who need to monitor access may be able to implement auditing directly through their database server.
+This version has been updated to be compatible with Ruby 3.3, Rails 8.1, and MySQL 8.x. If you need compatibility with older versions, you can still use [version 1.3](https://github.com/mdm33/digrec/tree/a48962dc5b5b7ebd869988ba5e7e46b909a419b9). Some changes are based on updates by Marius L. Jøhndal to the original PROIEL app, which we gratefully acknowledge. As part of the update, the auditing functionality has been removed; users who need to monitor access may be able to implement auditing directly through their database server.
 
 ## License
 
